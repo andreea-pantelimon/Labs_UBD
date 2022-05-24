@@ -1,0 +1,50 @@
+SQL> set lines 200
+SQL> set pages 100
+SQL> select to_char(sysdate, 'dd-mm-yyyy hh:mi:ss') from dual;
+
+TO_CHAR(SYSDATE,'DD                                                                                                                                                                                     
+-------------------                                                                                                                                                                                     
+12-10-2021 02:15:36                                                                                                                                                                                     
+
+SQL> insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab2', user sysdate, null, null);
+insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab2', user sysdate, null, null)
+                                                                              *
+ERROR at line 1:
+ORA-00917: missing comma 
+
+
+SQL> insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab2', user, sysdate, null, null);
+
+1 row created.
+
+SQL> select * from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  NUME_USER  DATA_IN   DATA_SF       DURATA                                                                                                          
+------------------------------ ---------- ---------- ---------- --------- --------- ----------                                                                                                          
+Pantelimon Andreea             341C5      Lab2       ABD1       12-OCT-21                                                                                                                               
+
+SQL> update login_lab_ubd set data_sf=sysdate where laborator='Lab2';
+
+1 row updated.
+
+SQL> update login_lab_ubd set durata=round((data_sf-data_in)*24*60) where laborator='Lab2';
+
+1 row updated.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select instance_number, instance_name, to_char(startup_time, 'dd-mm-yyyy hh:mi:ss'), host_name from v$instance;
+
+INSTANCE_NUMBER INSTANCE_NAME    TO_CHAR(STARTUP_TIM HOST_NAME                                                                                                                                          
+--------------- ---------------- ------------------- ----------------------------------------------------------------                                                                                   
+              1 orcl             12-10-2021 02:04:09 DESKTOP-E0N7ML4                                                                                                                                    
+
+SQL> select nume_stud, grupa, laborator, to_char(data_in, 'dd-mm-yyyy hh:mi:ss') data_inceput, to_char(data_sf, 'dd-mm-yyyy hh:mi:ss') data_sfarsit, durata minute_lucrate from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  DATA_INCEPUT        DATA_SFARSIT        MINUTE_LUCRATE                                                                                             
+------------------------------ ---------- ---------- ------------------- ------------------- --------------                                                                                             
+Pantelimon Andreea             341C5      Lab2       12-10-2021 02:16:58 12-10-2021 05:21:15            184                                                                                             
+
+SQL> spool off;

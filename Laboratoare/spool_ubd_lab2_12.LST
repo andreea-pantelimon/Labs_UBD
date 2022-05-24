@@ -1,0 +1,68 @@
+SQL> set lines 200
+SQL> set pages 100
+SQL> select to_char(sysdate, 'dd-mm-yyyy hh:mi:ss') from dual;
+
+TO_CHAR(SYSDATE,'DD                                                                                                                                                                                     
+-------------------                                                                                                                                                                                     
+17-10-2021 05:39:14                                                                                                                                                                                     
+
+SQL> insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab2', user, sysdate, null, null);
+insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab2', user, sysdate, null, null)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> insert into login_lab_ubd values('Pantelimon Andreea', '341C5', 'Lab2', user, sysdate, null, null);
+insert into login_lab_ubd values('Pantelimon Andreea', '341C5', 'Lab2', user, sysdate, null, null)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> create table login_lab_ubd
+  2  ( nume_stud varchar2(30),
+  3  grupa varchar2(10),
+  4  laborator varchar2(10),
+  5  nume_user varchar2(10),
+  6  data_in date,
+  7  data_sf date,
+  8  durata number);
+
+Table created.
+
+SQL> insert into login_lab_ubd values('Pantelimon Andreea', '341C5', 'Lab2', user, sysdate, null, null);
+
+1 row created.
+
+SQL> select * from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  NUME_USER  DATA_IN   DATA_SF       DURATA                                                                                                          
+------------------------------ ---------- ---------- ---------- --------- --------- ----------                                                                                                          
+Pantelimon Andreea             341C5      Lab2       ABD1       17-OCT-21                                                                                                                               
+
+SQL> update login_lab_ubd set data_sf=sysdate where laborator='Lab2';
+
+1 row updated.
+
+SQL> update login_lab_ubd set durata=round((data_sf-data_in)*24*60) where laborator='Lab2';
+
+1 row updated.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select instance_number,instance_name,to_char(startup_time, 'dd-mm-yyyy hh:mi:ss'), host_name from v$instance;
+
+INSTANCE_NUMBER INSTANCE_NAME    TO_CHAR(STARTUP_TIM HOST_NAME                                                                                                                                          
+--------------- ---------------- ------------------- ----------------------------------------------------------------                                                                                   
+              1 orcl             17-10-2021 05:22:55 DESKTOP-E0N7ML4                                                                                                                                    
+
+SQL> select nume_stud, grupa, laborator, to_char(data_in, 'dd-mm-yyyy hh:mi:ss') data_inceput, to_char(data_sf, 'dd-mm-yyyy hh:mi:ss')data_sfarsit, durata minute_lucrate from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  DATA_INCEPUT        DATA_SFARSIT        MINUTE_LUCRATE                                                                                             
+------------------------------ ---------- ---------- ------------------- ------------------- --------------                                                                                             
+Pantelimon Andreea             341C5      Lab2       17-10-2021 05:40:39 17-10-2021 07:33:56            113                                                                                             
+
+SQL> spool off;

@@ -1,0 +1,645 @@
+SQL> set lines 200
+SQL> set pages 100
+SQL> select to_char(sysdate, 'dd-mm-yyyy hh:mi:ss') from dual;
+
+TO_CHAR(SYSDATE,'DD                                                                                                                                                                                     
+-------------------                                                                                                                                                                                     
+07-12-2021 10:03:18                                                                                                                                                                                     
+
+SQL> 
+SQL> insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab9', user, sysdate, null, null);
+
+1 row created.
+
+SQL> 
+SQL> select * from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  NUME_USER  DATA_IN   DATA_SF       DURATA                                                                                                          
+------------------------------ ---------- ---------- ---------- --------- --------- ----------                                                                                                          
+Pantelimon Andreea             341C5      Lab6       ABD1       09-NOV-21 09-NOV-21        100                                                                                                          
+Pantelimon Andreea             341C5      Lab8       ABD1       23-NOV-21 23-NOV-21         96                                                                                                          
+Pantelimon Andreea             341C5      Lab2       ABD1       17-OCT-21 17-OCT-21        113                                                                                                          
+Pantelimon Andreea             341C5      Lab4       ABD1       26-OCT-21 26-OCT-21         73                                                                                                          
+Pantelimon Andreea             341C5      Lab3       ABD1       19-OCT-21 19-OCT-21         71                                                                                                          
+Pantelimon Andreea             341C5      Lab5       ABD1       02-NOV-21 02-NOV-21         70                                                                                                          
+Pantelimon Andreea             341C5      Lab9       ABD1       07-DEC-21                                                                                                                               
+Pantelimon Andreea             341C5      Lab7       ABD1       16-NOV-21                                                                                                                               
+Pantelimon Andreea             341C5      Lab7_c     ABD1       16-NOV-21 16-NOV-21          4                                                                                                          
+
+9 rows selected.
+
+SQL> CREATE TABLE studenti
+  2  (facultate char(30) DEFAULT 'Automatica si Calculatoare',
+  3  catedra char(20),
+  4  cnp number(13),
+  5  nume varchar2(30),
+  6  data_nastere date,
+  7  an_univ number(4) DEFAULT 2006,
+  8  media_admitere number(5,2) ,
+  9  discip_oblig varchar2(20) DEFAULT 'Matematica',
+ 10  discip_opt varchar2(20) DEFAULT 'Fizica' ,
+ 11  operator varchar2(20) DEFAULT user,
+ 12  data_op date DEFAULT sysdate )
+ 13  TABLESPACE ubd_data,
+ 14   STORAGE (initial 8M),
+ 15   PCTUSED 30,
+ 16   PCTFREE 20,
+ 17  NOLOGGING;
+TABLESPACE ubd_data,
+           *
+ERROR at line 13:
+ORA-00959: tablespace 'UBD_DATA' does not exist 
+
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  CREATE TABLE studenti
+  2  (facultate char(30) DEFAULT 'Automatica si Calculatoare',
+  3  catedra char(20),
+  4  cnp number(13),
+  5  nume varchar2(30),
+  6  data_nastere date,
+  7  an_univ number(4) DEFAULT 2006,
+  8  media_admitere number(5,2) ,
+  9  discip_oblig varchar2(20) DEFAULT 'Matematica',
+ 10  discip_opt varchar2(20) DEFAULT 'Fizica' ,
+ 11  operator varchar2(20) DEFAULT user,
+ 12  data_op date DEFAULT sysdate )
+ 13  TABLESPACE ubd_data1,
+ 14   STORAGE (initial 8M),
+ 15   PCTUSED 30,
+ 16   PCTFREE 20,
+ 17* NOLOGGING
+SQL> edit
+Wrote file afiedt.buf
+
+  1  CREATE TABLE studenti
+  2  (facultate char(30) DEFAULT 'Automatica si Calculatoare',
+  3  catedra char(20),
+  4  cnp number(13),
+  5  nume varchar2(30),
+  6  data_nastere date,
+  7  an_univ number(4) DEFAULT 2006,
+  8  media_admitere number(5,2) ,
+  9  discip_oblig varchar2(20) DEFAULT 'Matematica',
+ 10  discip_opt varchar2(20) DEFAULT 'Fizica' ,
+ 11  operator varchar2(20) DEFAULT user,
+ 12  data_op date DEFAULT sysdate )
+ 13  TABLESPACE ubd_data1,
+ 14   STORAGE (initial 8M),
+ 15   PCTUSED 30,
+ 16   PCTFREE 20,
+ 17* NOLOGGING
+SQL> CREATE TABLE studenti
+  2  (facultate char(30) DEFAULT 'Automatica si Calculatoare',
+  3  catedra char(20),
+  4  cnp number(13),
+  5  nume varchar2(30),
+  6  data_nastere date,
+  7  an_univ number(4) DEFAULT 2006,
+  8  media_admitere number(5,2) ,
+  9  discip_oblig varchar2(20) DEFAULT 'Matematica',
+ 10  discip_opt varchar2(20) DEFAULT 'Fizica' ,
+ 11  operator varchar2(20) DEFAULT user,
+ 12  data_op date DEFAULT sysdate )
+ 13  TABLESPACE ubd_data1,
+ 14   STORAGE (initial 8M),
+ 15   PCTUSED 30,
+ 16   PCTFREE 20,
+ 17  NOLOGGING;
+
+Table created.
+
+SQL> CREATE TABLE angajati_dep
+  2  (
+  3   depart number(2),
+  4   ecuson number(5),
+  5  nume varchar2(30),
+  6   job varchar2(20),
+  7   data_ang date,
+  8   salariu number(6)
+  9   )
+ 10  PARTITION BY LIST (depart)
+ 11  (
+ 12  PARTITION Dep10 VALUES (10),
+ 13  PARTITION Dep20 VALUES (20),
+ 14  PARTITION Dep30 VALUES (30)
+ 15  );
+
+Table created.
+
+SQL> insert into angajati_dep select deptno, empno, ename, job, hiredate, sal from emp;
+
+15 rows created.
+
+SQL> select * from angajati_dep partition (dep10);
+
+    DEPART     ECUSON NUME                           JOB                  DATA_ANG     SALARIU                                                                                                          
+---------- ---------- ------------------------------ -------------------- --------- ----------                                                                                                          
+        10        999 TEST                           TRANZACT             23-NOV-21        100                                                                                                          
+        10       7782 CLARK                          MANAGER              09-JUN-81       2450                                                                                                          
+        10       7839 KING                           PRESIDENT            17-NOV-81       5000                                                                                                          
+        10       7934 MILLER                         CLERK                23-JAN-82       1300                                                                                                          
+
+SQL> create global temporary table emp_temp on commit delete rows as
+  2   select * from emp;
+
+Table created.
+
+SQL> 
+SQL> select * from emp_temp;
+
+no rows selected
+
+SQL> insert into emp_temp select * from emp;
+
+15 rows created.
+
+SQL> drop table emp_temp;
+
+Table dropped.
+
+SQL>  create global temporary table emp_temp on commit preserve rows as
+  2   select * from emp;
+
+Table created.
+
+SQL> select count(*) from emp_temp;
+
+  COUNT(*)                                                                                                                                                                                              
+----------                                                                                                                                                                                              
+        15                                                                                                                                                                                              
+
+SQL> drop table emp_temp;
+drop table emp_temp
+           *
+ERROR at line 1:
+ORA-14452: attempt to create, alter or drop an index on temporary table already in use 
+
+
+SQL> create table emp_copy as select * from scott.emp;
+create table emp_copy as select * from scott.emp
+                                             *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> Am uitat ca nu mai il am pe scott
+SP2-0734: unknown command beginning "Am uitat c..." - rest of line ignored.
+SQL> esc dba_unused_col_tabs;
+SP2-0734: unknown command beginning "esc dba_un..." - rest of line ignored.
+SQL> esc dba_unused_col_tabs;
+SP2-0734: unknown command beginning "esc dba_un..." - rest of line ignored.
+SQL> desc dba_unused_col_tabs;
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ OWNER                                                                                                             NOT NULL VARCHAR2(128)
+ TABLE_NAME                                                                                                        NOT NULL VARCHAR2(128)
+ COUNT                                                                                                                      NUMBER
+
+SQL> select * from dba_unused_col_tabs;
+
+no rows selected
+
+SQL> desc dba_tables;
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ OWNER                                                                                                             NOT NULL VARCHAR2(128)
+ TABLE_NAME                                                                                                        NOT NULL VARCHAR2(128)
+ TABLESPACE_NAME                                                                                                            VARCHAR2(30)
+ CLUSTER_NAME                                                                                                               VARCHAR2(128)
+ IOT_NAME                                                                                                                   VARCHAR2(128)
+ STATUS                                                                                                                     VARCHAR2(8)
+ PCT_FREE                                                                                                                   NUMBER
+ PCT_USED                                                                                                                   NUMBER
+ INI_TRANS                                                                                                                  NUMBER
+ MAX_TRANS                                                                                                                  NUMBER
+ INITIAL_EXTENT                                                                                                             NUMBER
+ NEXT_EXTENT                                                                                                                NUMBER
+ MIN_EXTENTS                                                                                                                NUMBER
+ MAX_EXTENTS                                                                                                                NUMBER
+ PCT_INCREASE                                                                                                               NUMBER
+ FREELISTS                                                                                                                  NUMBER
+ FREELIST_GROUPS                                                                                                            NUMBER
+ LOGGING                                                                                                                    VARCHAR2(3)
+ BACKED_UP                                                                                                                  VARCHAR2(1)
+ NUM_ROWS                                                                                                                   NUMBER
+ BLOCKS                                                                                                                     NUMBER
+ EMPTY_BLOCKS                                                                                                               NUMBER
+ AVG_SPACE                                                                                                                  NUMBER
+ CHAIN_CNT                                                                                                                  NUMBER
+ AVG_ROW_LEN                                                                                                                NUMBER
+ AVG_SPACE_FREELIST_BLOCKS                                                                                                  NUMBER
+ NUM_FREELIST_BLOCKS                                                                                                        NUMBER
+ DEGREE                                                                                                                     VARCHAR2(10)
+ INSTANCES                                                                                                                  VARCHAR2(10)
+ CACHE                                                                                                                      VARCHAR2(5)
+ TABLE_LOCK                                                                                                                 VARCHAR2(8)
+ SAMPLE_SIZE                                                                                                                NUMBER
+ LAST_ANALYZED                                                                                                              DATE
+ PARTITIONED                                                                                                                VARCHAR2(3)
+ IOT_TYPE                                                                                                                   VARCHAR2(12)
+ TEMPORARY                                                                                                                  VARCHAR2(1)
+ SECONDARY                                                                                                                  VARCHAR2(1)
+ NESTED                                                                                                                     VARCHAR2(3)
+ BUFFER_POOL                                                                                                                VARCHAR2(7)
+ FLASH_CACHE                                                                                                                VARCHAR2(7)
+ CELL_FLASH_CACHE                                                                                                           VARCHAR2(7)
+ ROW_MOVEMENT                                                                                                               VARCHAR2(8)
+ GLOBAL_STATS                                                                                                               VARCHAR2(3)
+ USER_STATS                                                                                                                 VARCHAR2(3)
+ DURATION                                                                                                                   VARCHAR2(15)
+ SKIP_CORRUPT                                                                                                               VARCHAR2(8)
+ MONITORING                                                                                                                 VARCHAR2(3)
+ CLUSTER_OWNER                                                                                                              VARCHAR2(128)
+ DEPENDENCIES                                                                                                               VARCHAR2(8)
+ COMPRESSION                                                                                                                VARCHAR2(8)
+ COMPRESS_FOR                                                                                                               VARCHAR2(30)
+ DROPPED                                                                                                                    VARCHAR2(3)
+ READ_ONLY                                                                                                                  VARCHAR2(3)
+ SEGMENT_CREATED                                                                                                            VARCHAR2(3)
+ RESULT_CACHE                                                                                                               VARCHAR2(7)
+ CLUSTERING                                                                                                                 VARCHAR2(3)
+ ACTIVITY_TRACKING                                                                                                          VARCHAR2(23)
+ DML_TIMESTAMP                                                                                                              VARCHAR2(25)
+ HAS_IDENTITY                                                                                                               VARCHAR2(3)
+ CONTAINER_DATA                                                                                                             VARCHAR2(3)
+ INMEMORY                                                                                                                   VARCHAR2(8)
+ INMEMORY_PRIORITY                                                                                                          VARCHAR2(8)
+ INMEMORY_DISTRIBUTE                                                                                                        VARCHAR2(15)
+ INMEMORY_COMPRESSION                                                                                                       VARCHAR2(17)
+ INMEMORY_DUPLICATE                                                                                                         VARCHAR2(13)
+ DEFAULT_COLLATION                                                                                                          VARCHAR2(100)
+ DUPLICATED                                                                                                                 VARCHAR2(1)
+ SHARDED                                                                                                                    VARCHAR2(1)
+ EXTERNAL                                                                                                                   VARCHAR2(3)
+ HYBRID                                                                                                                     VARCHAR2(3)
+ CELLMEMORY                                                                                                                 VARCHAR2(24)
+ CONTAINERS_DEFAULT                                                                                                         VARCHAR2(3)
+ CONTAINER_MAP                                                                                                              VARCHAR2(3)
+ EXTENDED_DATA_LINK                                                                                                         VARCHAR2(3)
+ EXTENDED_DATA_LINK_MAP                                                                                                     VARCHAR2(3)
+ INMEMORY_SERVICE                                                                                                           VARCHAR2(12)
+ INMEMORY_SERVICE_NAME                                                                                                      VARCHAR2(1000)
+ CONTAINER_MAP_OBJECT                                                                                                       VARCHAR2(3)
+ MEMOPTIMIZE_READ                                                                                                           VARCHAR2(8)
+ MEMOPTIMIZE_WRITE                                                                                                          VARCHAR2(8)
+ HAS_SENSITIVE_COLUMN                                                                                                       VARCHAR2(3)
+ ADMIT_NULL                                                                                                                 VARCHAR2(3)
+ DATA_LINK_DML_ENABLED                                                                                                      VARCHAR2(3)
+ LOGICAL_REPLICATION                                                                                                        VARCHAR2(8)
+
+SQL> desc user_tables
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ TABLE_NAME                                                                                                        NOT NULL VARCHAR2(128)
+ TABLESPACE_NAME                                                                                                            VARCHAR2(30)
+ CLUSTER_NAME                                                                                                               VARCHAR2(128)
+ IOT_NAME                                                                                                                   VARCHAR2(128)
+ STATUS                                                                                                                     VARCHAR2(8)
+ PCT_FREE                                                                                                                   NUMBER
+ PCT_USED                                                                                                                   NUMBER
+ INI_TRANS                                                                                                                  NUMBER
+ MAX_TRANS                                                                                                                  NUMBER
+ INITIAL_EXTENT                                                                                                             NUMBER
+ NEXT_EXTENT                                                                                                                NUMBER
+ MIN_EXTENTS                                                                                                                NUMBER
+ MAX_EXTENTS                                                                                                                NUMBER
+ PCT_INCREASE                                                                                                               NUMBER
+ FREELISTS                                                                                                                  NUMBER
+ FREELIST_GROUPS                                                                                                            NUMBER
+ LOGGING                                                                                                                    VARCHAR2(3)
+ BACKED_UP                                                                                                                  VARCHAR2(1)
+ NUM_ROWS                                                                                                                   NUMBER
+ BLOCKS                                                                                                                     NUMBER
+ EMPTY_BLOCKS                                                                                                               NUMBER
+ AVG_SPACE                                                                                                                  NUMBER
+ CHAIN_CNT                                                                                                                  NUMBER
+ AVG_ROW_LEN                                                                                                                NUMBER
+ AVG_SPACE_FREELIST_BLOCKS                                                                                                  NUMBER
+ NUM_FREELIST_BLOCKS                                                                                                        NUMBER
+ DEGREE                                                                                                                     VARCHAR2(10)
+ INSTANCES                                                                                                                  VARCHAR2(10)
+ CACHE                                                                                                                      VARCHAR2(5)
+ TABLE_LOCK                                                                                                                 VARCHAR2(8)
+ SAMPLE_SIZE                                                                                                                NUMBER
+ LAST_ANALYZED                                                                                                              DATE
+ PARTITIONED                                                                                                                VARCHAR2(3)
+ IOT_TYPE                                                                                                                   VARCHAR2(12)
+ TEMPORARY                                                                                                                  VARCHAR2(1)
+ SECONDARY                                                                                                                  VARCHAR2(1)
+ NESTED                                                                                                                     VARCHAR2(3)
+ BUFFER_POOL                                                                                                                VARCHAR2(7)
+ FLASH_CACHE                                                                                                                VARCHAR2(7)
+ CELL_FLASH_CACHE                                                                                                           VARCHAR2(7)
+ ROW_MOVEMENT                                                                                                               VARCHAR2(8)
+ GLOBAL_STATS                                                                                                               VARCHAR2(3)
+ USER_STATS                                                                                                                 VARCHAR2(3)
+ DURATION                                                                                                                   VARCHAR2(15)
+ SKIP_CORRUPT                                                                                                               VARCHAR2(8)
+ MONITORING                                                                                                                 VARCHAR2(3)
+ CLUSTER_OWNER                                                                                                              VARCHAR2(128)
+ DEPENDENCIES                                                                                                               VARCHAR2(8)
+ COMPRESSION                                                                                                                VARCHAR2(8)
+ COMPRESS_FOR                                                                                                               VARCHAR2(30)
+ DROPPED                                                                                                                    VARCHAR2(3)
+ READ_ONLY                                                                                                                  VARCHAR2(3)
+ SEGMENT_CREATED                                                                                                            VARCHAR2(3)
+ RESULT_CACHE                                                                                                               VARCHAR2(7)
+ CLUSTERING                                                                                                                 VARCHAR2(3)
+ ACTIVITY_TRACKING                                                                                                          VARCHAR2(23)
+ DML_TIMESTAMP                                                                                                              VARCHAR2(25)
+ HAS_IDENTITY                                                                                                               VARCHAR2(3)
+ CONTAINER_DATA                                                                                                             VARCHAR2(3)
+ INMEMORY                                                                                                                   VARCHAR2(8)
+ INMEMORY_PRIORITY                                                                                                          VARCHAR2(8)
+ INMEMORY_DISTRIBUTE                                                                                                        VARCHAR2(15)
+ INMEMORY_COMPRESSION                                                                                                       VARCHAR2(17)
+ INMEMORY_DUPLICATE                                                                                                         VARCHAR2(13)
+ DEFAULT_COLLATION                                                                                                          VARCHAR2(100)
+ DUPLICATED                                                                                                                 VARCHAR2(1)
+ SHARDED                                                                                                                    VARCHAR2(1)
+ EXTERNAL                                                                                                                   VARCHAR2(3)
+ HYBRID                                                                                                                     VARCHAR2(3)
+ CELLMEMORY                                                                                                                 VARCHAR2(24)
+ CONTAINERS_DEFAULT                                                                                                         VARCHAR2(3)
+ CONTAINER_MAP                                                                                                              VARCHAR2(3)
+ EXTENDED_DATA_LINK                                                                                                         VARCHAR2(3)
+ EXTENDED_DATA_LINK_MAP                                                                                                     VARCHAR2(3)
+ INMEMORY_SERVICE                                                                                                           VARCHAR2(12)
+ INMEMORY_SERVICE_NAME                                                                                                      VARCHAR2(1000)
+ CONTAINER_MAP_OBJECT                                                                                                       VARCHAR2(3)
+ MEMOPTIMIZE_READ                                                                                                           VARCHAR2(8)
+ MEMOPTIMIZE_WRITE                                                                                                          VARCHAR2(8)
+ HAS_SENSITIVE_COLUMN                                                                                                       VARCHAR2(3)
+ ADMIT_NULL                                                                                                                 VARCHAR2(3)
+ DATA_LINK_DML_ENABLED                                                                                                      VARCHAR2(3)
+ LOGICAL_REPLICATION                                                                                                        VARCHAR2(8)
+
+SQL> select instances, tablespace_name, table_name from user_tables;
+
+INSTANCES                                TABLESPACE_NAME                TABLE_NAME                                                                                                                      
+---------------------------------------- ------------------------------ --------------------------------------------------------------------------------------------------------------------------------
+         1                               BD_DATA                        DEPT                                                                                                                            
+         1                               BD_DATA                        EMP                                                                                                                             
+         1                               BD_DATA                        BONUS                                                                                                                           
+         1                               BD_DATA                        SALGRADE                                                                                                                        
+         1                               BD_DATA                        LOGIN_LAB_UBD                                                                                                                   
+         1                               UBD_DATA1                      STUDENTI                                                                                                                        
+         1                                                              ANGAJATI_DEP                                                                                                                    
+         1                                                              EMP_TEMP                                                                                                                        
+
+8 rows selected.
+
+SQL>  select table_name, partition_name, high_value from user_tab_partitions
+  2   where table_name = 'ANGAJATI_DEP'
+  3   order by partition_name;
+
+TABLE_NAME                                                                                                                                                                                              
+--------------------------------------------------------------------------------------------------------------------------------                                                                        
+PARTITION_NAME                                                                                                                                                                                          
+--------------------------------------------------------------------------------------------------------------------------------                                                                        
+HIGH_VALUE                                                                                                                                                                                              
+--------------------------------------------------------------------------------                                                                                                                        
+ANGAJATI_DEP                                                                                                                                                                                            
+DEP10                                                                                                                                                                                                   
+10                                                                                                                                                                                                      
+                                                                                                                                                                                                        
+ANGAJATI_DEP                                                                                                                                                                                            
+DEP20                                                                                                                                                                                                   
+20                                                                                                                                                                                                      
+                                                                                                                                                                                                        
+ANGAJATI_DEP                                                                                                                                                                                            
+DEP30                                                                                                                                                                                                   
+30                                                                                                                                                                                                      
+                                                                                                                                                                                                        
+
+SQL> desc dba_objects
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ OWNER                                                                                                                      VARCHAR2(128)
+ OBJECT_NAME                                                                                                                VARCHAR2(128)
+ SUBOBJECT_NAME                                                                                                             VARCHAR2(128)
+ OBJECT_ID                                                                                                                  NUMBER
+ DATA_OBJECT_ID                                                                                                             NUMBER
+ OBJECT_TYPE                                                                                                                VARCHAR2(23)
+ CREATED                                                                                                                    DATE
+ LAST_DDL_TIME                                                                                                              DATE
+ TIMESTAMP                                                                                                                  VARCHAR2(19)
+ STATUS                                                                                                                     VARCHAR2(7)
+ TEMPORARY                                                                                                                  VARCHAR2(1)
+ GENERATED                                                                                                                  VARCHAR2(1)
+ SECONDARY                                                                                                                  VARCHAR2(1)
+ NAMESPACE                                                                                                                  NUMBER
+ EDITION_NAME                                                                                                               VARCHAR2(128)
+ SHARING                                                                                                                    VARCHAR2(18)
+ EDITIONABLE                                                                                                                VARCHAR2(1)
+ ORACLE_MAINTAINED                                                                                                          VARCHAR2(1)
+ APPLICATION                                                                                                                VARCHAR2(1)
+ DEFAULT_COLLATION                                                                                                          VARCHAR2(100)
+ DUPLICATED                                                                                                                 VARCHAR2(1)
+ SHARDED                                                                                                                    VARCHAR2(1)
+ CREATED_APPID                                                                                                              NUMBER
+ CREATED_VSNID                                                                                                              NUMBER
+ MODIFIED_APPID                                                                                                             NUMBER
+ MODIFIED_VSNID                                                                                                             NUMBER
+
+SQL> EXERCITIUL 1
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> SA SE CREEZE O TABELA COPIE EMP_LAB A TABELEI EMP. DEZACTIVATI COLOANELE SALARIU SI COMISION DIN EMP_LAB SI VERIFICATI IN DICTIONAR CU CATE COLOANEDEZACTIVATE FIGUREAZA TABELA COPIE
+SP2-0734: unknown command beginning "SA SE CREE..." - rest of line ignored.
+SQL> create table EMP_LAB as select * from emp;
+
+Table created.
+
+SQL> select * from emp_lab;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO                                                                                                                   
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------                                                                                                                   
+       999 TEST       TRANZACT        1111 23-NOV-21        100          0         10                                                                                                                   
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20                                                                                                                   
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30                                                                                                                   
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30                                                                                                                   
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20                                                                                                                   
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30                                                                                                                   
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30                                                                                                                   
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10                                                                                                                   
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20                                                                                                                   
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10                                                                                                                   
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30                                                                                                                   
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20                                                                                                                   
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30                                                                                                                   
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20                                                                                                                   
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10                                                                                                                   
+
+15 rows selected.
+
+SQL> alter table emp_lab
+  2  set unused column sal, comm
+  3  cascade constraints;
+set unused column sal, comm
+                     *
+ERROR at line 2:
+ORA-00933: SQL command not properly ended 
+
+
+SQL> alter table_emp_lab
+  2  
+SQL> alter table emp_lab
+  2  set unused column sal
+  3  cascade constraints;
+
+Table altered.
+
+SQL> alter table emp_lab
+  2  set unused column comm
+  3  cascade constraints;
+
+Table altered.
+
+SQL> select count from dba_unused_col_tabs
+  2  where TABLE_NAME = 'EMP_LAB';
+
+     COUNT                                                                                                                                                                                              
+----------                                                                                                                                                                                              
+         2                                                                                                                                                                                              
+
+SQL> EX 2
+SP2-0042: unknown command "EX 2" - rest of line ignored.
+SQL> SA SE ALOCE TABELEI EMP_LAB O EXTENSIE DE 100KB INTR-UN FISIER NOU CREAT ALOCAT TABLESPACE-LUI PERMANENT ASIGNAT USERULUI CURENT.
+SP2-0734: unknown command beginning "SA SE ALOC..." - rest of line ignored.
+SQL> select default_tablespace from dba_users;
+
+DEFAULT_TABLESPACE                                                                                                                                                                                      
+------------------------------                                                                                                                                                                          
+SYSTEM                                                                                                                                                                                                  
+SYSTEM                                                                                                                                                                                                  
+SYSTEM                                                                                                                                                                                                  
+SYSTEM                                                                                                                                                                                                  
+SYSTEM                                                                                                                                                                                                  
+SYSTEM                                                                                                                                                                                                  
+SYSTEM                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+SYSAUX                                                                                                                                                                                                  
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+USERS                                                                                                                                                                                                   
+BD_DATA                                                                                                                                                                                                 
+BD_DATA                                                                                                                                                                                                 
+
+38 rows selected.
+
+SQL> select default_tablespace from dba_users
+  2  where username = 'abd1';
+
+no rows selected
+
+SQL> alter tablespace BD_DATA
+  2  add datafile 'd:\ubd_new_data.dbf' size 10M;
+
+Tablespace altered.
+
+SQL> alter table emp_lab
+  2  allocate extent(size 100k datafike 'd:\ubd_new_data.dbf');
+allocate extent(size 100k datafike 'd:\ubd_new_data.dbf')
+                          *
+ERROR at line 2:
+ORA-03281: invalid ALLOCATE EXTENT option 
+
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  alter table emp_lab
+  2* allocate extent(size 100k datafile 'd:\ubd_new_data.dbf')
+SQL> alter table emp_lab
+  2  allocate extent(size 100k datafile 'd:\ubd_new_data.dbf')
+  3  ;
+
+Table altered.
+
+SQL> EXERCITIUL 3
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> FACETI O LISTA CU NUMELE INSTANTEI CURENTE, NUMELE TABLESPACE-LUI PERMANENT ASIGNAT USERULUI CURENT, NUMELE TABELELOR CREATE DE USERUL CURENT SI NUMARUL MAXIM DE EXTENSII PERMISE PENTRU FIECARE TABELA
+SP2-0734: unknown command beginning "FACETI O L..." - rest of line ignored.
+SQL> select a.instance_name, b.tablespace_name, b.table_name, b.max_extents
+  2  from user_tables b, v$instance a
+  3  where a.instance_number = b.instances;
+
+INSTANCE_NAME    TABLESPACE_NAME                TABLE_NAME                                                                                                                       MAX_EXTENTS            
+---------------- ------------------------------ -------------------------------------------------------------------------------------------------------------------------------- -----------            
+orcl             BD_DATA                        DEPT                                                                                                                              2147483645            
+orcl             BD_DATA                        EMP                                                                                                                               2147483645            
+orcl             BD_DATA                        BONUS                                                                                                                                                   
+orcl             BD_DATA                        SALGRADE                                                                                                                          2147483645            
+orcl             BD_DATA                        LOGIN_LAB_UBD                                                                                                                     2147483645            
+orcl             UBD_DATA1                      STUDENTI                                                                                                                                                
+orcl                                            ANGAJATI_DEP                                                                                                                                            
+orcl             BD_DATA                        EMP_LAB                                                                                                                           2147483645            
+orcl                                            EMP_TEMP                                                                                                                                                
+
+9 rows selected.
+
+SQL> update login_lab_ubd set data_sf=sysdate where laborator='Lab9';
+
+1 row updated.
+
+SQL> 
+SQL> update login_lab_ubd set durata=round((data_sf-data_in)*24*60) where laborator='Lab9';
+
+1 row updated.
+
+SQL> 
+SQL> commit;
+
+Commit complete.
+
+SQL> select instance_number,instance_name,to_char(startup_time, 'dd-mm-yyyy hh:mi:ss'), host_name from v$instance;
+
+INSTANCE_NUMBER INSTANCE_NAME    TO_CHAR(STARTUP_TIM HOST_NAME                                                                                                                                          
+--------------- ---------------- ------------------- ----------------------------------------------------------------                                                                                   
+              1 orcl             22-11-2021 07:33:06 DESKTOP-E0N7ML4                                                                                                                                    
+
+SQL> 
+SQL> select nume_stud, grupa, laborator, to_char(data_in, 'dd-mm-yyyy hh:mi:ss') data_inceput, to_char(data_sf, 'dd-mm-yyyy hh:mi:ss')data_sfarsit, durata minute_lucrate from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  DATA_INCEPUT        DATA_SFARSIT        MINUTE_LUCRATE                                                                                             
+------------------------------ ---------- ---------- ------------------- ------------------- --------------                                                                                             
+Pantelimon Andreea             341C5      Lab6       09-11-2021 10:04:21 09-11-2021 11:44:43            100                                                                                             
+Pantelimon Andreea             341C5      Lab8       23-11-2021 10:08:25 23-11-2021 11:44:52             96                                                                                             
+Pantelimon Andreea             341C5      Lab2       17-10-2021 05:40:39 17-10-2021 07:33:56            113                                                                                             
+Pantelimon Andreea             341C5      Lab4       26-10-2021 10:18:49 26-10-2021 11:31:22             73                                                                                             
+Pantelimon Andreea             341C5      Lab3       19-10-2021 10:31:03 19-10-2021 11:42:02             71                                                                                             
+Pantelimon Andreea             341C5      Lab5       02-11-2021 10:39:03 02-11-2021 11:48:38             70                                                                                             
+Pantelimon Andreea             341C5      Lab9       07-12-2021 10:03:18 07-12-2021 11:49:18            106                                                                                             
+Pantelimon Andreea             341C5      Lab7       16-11-2021 10:09:42                                                                                                                                
+Pantelimon Andreea             341C5      Lab7_c     16-11-2021 11:55:00 16-11-2021 11:58:38              4                                                                                             
+
+9 rows selected.
+
+SQL> spool off;

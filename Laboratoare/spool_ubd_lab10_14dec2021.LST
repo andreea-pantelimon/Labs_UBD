@@ -1,0 +1,478 @@
+SQL> set lines 200
+SQL> set pages 100
+SQL> select to_char(sysdate, 'dd-mm-yyyy hh:mi:ss') from dual;
+
+TO_CHAR(SYSDATE,'DD                                                                                                                                                                                     
+-------------------                                                                                                                                                                                     
+14-12-2021 10:08:55                                                                                                                                                                                     
+
+SQL> 
+SQL> insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab10', user, sysdate, null, null);
+
+1 row created.
+
+SQL> 
+SQL> select * from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  NUME_USER  DATA_IN   DATA_SF       DURATA                                                                                                          
+------------------------------ ---------- ---------- ---------- --------- --------- ----------                                                                                                          
+Pantelimon Andreea             341C5      Lab6       ABD1       09-NOV-21 09-NOV-21        100                                                                                                          
+Pantelimon Andreea             341C5      Lab8       ABD1       23-NOV-21 23-NOV-21         96                                                                                                          
+Pantelimon Andreea             341C5      Lab2       ABD1       17-OCT-21 17-OCT-21        113                                                                                                          
+Pantelimon Andreea             341C5      Lab4       ABD1       26-OCT-21 26-OCT-21         73                                                                                                          
+Pantelimon Andreea             341C5      Lab3       ABD1       19-OCT-21 19-OCT-21         71                                                                                                          
+Pantelimon Andreea             341C5      Lab5       ABD1       02-NOV-21 02-NOV-21         70                                                                                                          
+Pantelimon Andreea             341C5      Lab9       ABD1       07-DEC-21 07-DEC-21        106                                                                                                          
+Pantelimon Andreea             341C5      Lab10      ABD1       14-DEC-21                                                                                                                               
+Pantelimon Andreea             341C5      Lab7       ABD1       16-NOV-21                                                                                                                               
+Pantelimon Andreea             341C5      Lab7_c     ABD1       16-NOV-21 16-NOV-21          4                                                                                                          
+
+10 rows selected.
+
+SQL> desc dba_indexes
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ OWNER                                                                                                             NOT NULL VARCHAR2(128)
+ INDEX_NAME                                                                                                        NOT NULL VARCHAR2(128)
+ INDEX_TYPE                                                                                                                 VARCHAR2(27)
+ TABLE_OWNER                                                                                                       NOT NULL VARCHAR2(128)
+ TABLE_NAME                                                                                                        NOT NULL VARCHAR2(128)
+ TABLE_TYPE                                                                                                                 VARCHAR2(11)
+ UNIQUENESS                                                                                                                 VARCHAR2(9)
+ COMPRESSION                                                                                                                VARCHAR2(13)
+ PREFIX_LENGTH                                                                                                              NUMBER
+ TABLESPACE_NAME                                                                                                            VARCHAR2(30)
+ INI_TRANS                                                                                                                  NUMBER
+ MAX_TRANS                                                                                                                  NUMBER
+ INITIAL_EXTENT                                                                                                             NUMBER
+ NEXT_EXTENT                                                                                                                NUMBER
+ MIN_EXTENTS                                                                                                                NUMBER
+ MAX_EXTENTS                                                                                                                NUMBER
+ PCT_INCREASE                                                                                                               NUMBER
+ PCT_THRESHOLD                                                                                                              NUMBER
+ INCLUDE_COLUMN                                                                                                             NUMBER
+ FREELISTS                                                                                                                  NUMBER
+ FREELIST_GROUPS                                                                                                            NUMBER
+ PCT_FREE                                                                                                                   NUMBER
+ LOGGING                                                                                                                    VARCHAR2(3)
+ BLEVEL                                                                                                                     NUMBER
+ LEAF_BLOCKS                                                                                                                NUMBER
+ DISTINCT_KEYS                                                                                                              NUMBER
+ AVG_LEAF_BLOCKS_PER_KEY                                                                                                    NUMBER
+ AVG_DATA_BLOCKS_PER_KEY                                                                                                    NUMBER
+ CLUSTERING_FACTOR                                                                                                          NUMBER
+ STATUS                                                                                                                     VARCHAR2(8)
+ NUM_ROWS                                                                                                                   NUMBER
+ SAMPLE_SIZE                                                                                                                NUMBER
+ LAST_ANALYZED                                                                                                              DATE
+ DEGREE                                                                                                                     VARCHAR2(40)
+ INSTANCES                                                                                                                  VARCHAR2(40)
+ PARTITIONED                                                                                                                VARCHAR2(3)
+ TEMPORARY                                                                                                                  VARCHAR2(1)
+ GENERATED                                                                                                                  VARCHAR2(1)
+ SECONDARY                                                                                                                  VARCHAR2(1)
+ BUFFER_POOL                                                                                                                VARCHAR2(7)
+ FLASH_CACHE                                                                                                                VARCHAR2(7)
+ CELL_FLASH_CACHE                                                                                                           VARCHAR2(7)
+ USER_STATS                                                                                                                 VARCHAR2(3)
+ DURATION                                                                                                                   VARCHAR2(15)
+ PCT_DIRECT_ACCESS                                                                                                          NUMBER
+ ITYP_OWNER                                                                                                                 VARCHAR2(128)
+ ITYP_NAME                                                                                                                  VARCHAR2(128)
+ PARAMETERS                                                                                                                 VARCHAR2(1000)
+ GLOBAL_STATS                                                                                                               VARCHAR2(3)
+ DOMIDX_STATUS                                                                                                              VARCHAR2(12)
+ DOMIDX_OPSTATUS                                                                                                            VARCHAR2(6)
+ FUNCIDX_STATUS                                                                                                             VARCHAR2(8)
+ JOIN_INDEX                                                                                                                 VARCHAR2(3)
+ IOT_REDUNDANT_PKEY_ELIM                                                                                                    VARCHAR2(3)
+ DROPPED                                                                                                                    VARCHAR2(3)
+ VISIBILITY                                                                                                                 VARCHAR2(9)
+ DOMIDX_MANAGEMENT                                                                                                          VARCHAR2(14)
+ SEGMENT_CREATED                                                                                                            VARCHAR2(3)
+ ORPHANED_ENTRIES                                                                                                           VARCHAR2(3)
+ INDEXING                                                                                                                   VARCHAR2(7)
+ AUTO                                                                                                                       VARCHAR2(3)
+ CONSTRAINT_INDEX                                                                                                           VARCHAR2(3)
+
+SQL> select index_name, index_type, table_name, status from dba_indexes
+  2  where owner = 'ABD1';
+
+INDEX_NAME                                                                                                                       INDEX_TYPE                                                             
+-------------------------------------------------------------------------------------------------------------------------------- ---------------------------                                            
+TABLE_NAME                                                                                                                       STATUS                                                                 
+-------------------------------------------------------------------------------------------------------------------------------- --------                                                               
+PK_DEPT                                                                                                                          NORMAL                                                                 
+DEPT                                                                                                                             VALID                                                                  
+                                                                                                                                                                                                        
+PK_EMP                                                                                                                           NORMAL                                                                 
+EMP                                                                                                                              VALID                                                                  
+                                                                                                                                                                                                        
+INDEX_EX2                                                                                                                        NORMAL                                                                 
+EMP                                                                                                                              VALID                                                                  
+                                                                                                                                                                                                        
+SYS_C007426                                                                                                                      NORMAL                                                                 
+DEPT                                                                                                                             VALID                                                                  
+                                                                                                                                                                                                        
+
+SQL> desc dba_ind_columns
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ INDEX_OWNER                                                                                                       NOT NULL VARCHAR2(128)
+ INDEX_NAME                                                                                                        NOT NULL VARCHAR2(128)
+ TABLE_OWNER                                                                                                       NOT NULL VARCHAR2(128)
+ TABLE_NAME                                                                                                        NOT NULL VARCHAR2(128)
+ COLUMN_NAME                                                                                                                VARCHAR2(4000)
+ COLUMN_POSITION                                                                                                   NOT NULL NUMBER
+ COLUMN_LENGTH                                                                                                     NOT NULL NUMBER
+ CHAR_LENGTH                                                                                                                NUMBER
+ DESCEND                                                                                                                    VARCHAR2(4)
+ COLLATED_COLUMN_ID                                                                                                         NUMBER
+
+SQL> select index_name, table_owner, table_name, column_name
+  2  from dba_ind_columns where index_owner = 'ABD1';
+
+INDEX_NAME                                                                                                                                                                                              
+--------------------------------------------------------------------------------------------------------------------------------                                                                        
+TABLE_OWNER                                                                                                                                                                                             
+--------------------------------------------------------------------------------------------------------------------------------                                                                        
+TABLE_NAME                                                                                                                                                                                              
+--------------------------------------------------------------------------------------------------------------------------------                                                                        
+COLUMN_NAME                                                                                                                                                                                             
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+INDEX_EX2                                                                                                                                                                                               
+ABD1                                                                                                                                                                                                    
+EMP                                                                                                                                                                                                     
+ENAME                                                                                                                                                                                                   
+                                                                                                                                                                                                        
+PK_DEPT                                                                                                                                                                                                 
+ABD1                                                                                                                                                                                                    
+DEPT                                                                                                                                                                                                    
+DEPTNO                                                                                                                                                                                                  
+                                                                                                                                                                                                        
+PK_EMP                                                                                                                                                                                                  
+ABD1                                                                                                                                                                                                    
+EMP                                                                                                                                                                                                     
+EMPNO                                                                                                                                                                                                   
+                                                                                                                                                                                                        
+SYS_C007426                                                                                                                                                                                             
+ABD1                                                                                                                                                                                                    
+DEPT                                                                                                                                                                                                    
+DNAME                                                                                                                                                                                                   
+                                                                                                                                                                                                        
+
+SQL> desc v$object_usage
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ INDEX_NAME                                                                                                        NOT NULL VARCHAR2(128)
+ TABLE_NAME                                                                                                        NOT NULL VARCHAR2(128)
+ MONITORING                                                                                                                 VARCHAR2(3)
+ USED                                                                                                                       VARCHAR2(3)
+ START_MONITORING                                                                                                           VARCHAR2(19)
+ END_MONITORING                                                                                                             VARCHAR2(19)
+
+SQL>  select * from v$object_usage;
+
+no rows selected
+
+SQL> desc index_stats
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ HEIGHT                                                                                                                     NUMBER
+ BLOCKS                                                                                                                     NUMBER
+ NAME                                                                                                                       VARCHAR2(128)
+ PARTITION_NAME                                                                                                             VARCHAR2(128)
+ LF_ROWS                                                                                                                    NUMBER
+ LF_BLKS                                                                                                                    NUMBER
+ LF_ROWS_LEN                                                                                                                NUMBER
+ LF_BLK_LEN                                                                                                                 NUMBER
+ BR_ROWS                                                                                                                    NUMBER
+ BR_BLKS                                                                                                                    NUMBER
+ BR_ROWS_LEN                                                                                                                NUMBER
+ BR_BLK_LEN                                                                                                                 NUMBER
+ DEL_LF_ROWS                                                                                                                NUMBER
+ DEL_LF_ROWS_LEN                                                                                                            NUMBER
+ DISTINCT_KEYS                                                                                                              NUMBER
+ MOST_REPEATED_KEY                                                                                                          NUMBER
+ BTREE_SPACE                                                                                                                NUMBER
+ USED_SPACE                                                                                                                 NUMBER
+ PCT_USED                                                                                                                   NUMBER
+ ROWS_PER_KEY                                                                                                               NUMBER
+ BLKS_GETS_PER_ACCESS                                                                                                       NUMBER
+ PRE_ROWS                                                                                                                   NUMBER
+ PRE_ROWS_LEN                                                                                                               NUMBER
+ OPT_CMPR_COUNT                                                                                                             NUMBER
+ OPT_CMPR_PCTSAVE                                                                                                           NUMBER
+ DEL_LF_CMP_ROWS                                                                                                            NUMBER
+ PRG_LF_CMP_ROWS                                                                                                            NUMBER
+ LF_CMP_ROWS                                                                                                                NUMBER
+ LF_CMP_ROWS_LEN                                                                                                            NUMBER
+ LF_UNCMP_ROWS                                                                                                              NUMBER
+ LF_UNCMP_ROWS_LEN                                                                                                          NUMBER
+ LF_SUF_ROWS_LEN                                                                                                            NUMBER
+ LF_CMP_ROWS_UNCMP_LEN                                                                                                      NUMBER
+ LF_CMP_RECMP_COUNT                                                                                                         NUMBER
+ LF_CMP_LOCK_VEC_LEN                                                                                                        NUMBER
+ LF_CMP_BLKS                                                                                                                NUMBER
+ LF_UNCMP_BLKS                                                                                                              NUMBER
+
+SQL>  select name, blocks, used_space, pct_used, distinct_keys, lf_rows, del_lf_rows
+  2   from index_stats ;
+
+no rows selected
+
+SQL> EXERCITIUL 1
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> SA SE CREEZE O COPIE A TABELEI EMP APOI SA SE CREEZE UN INDEX PE COLOANELE DEPTNO SI EMPNO DIN TABELA COPIE. VERIFICATI IN DICTIONAR COMPONENTA INDEXULUI
+SP2-0734: unknown command beginning "SA SE CREE..." - rest of line ignored.
+SQL> create table emp_copy as select * from emp;
+
+Table created.
+
+SQL> select * from emp_copy;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO                                                                                                                   
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------                                                                                                                   
+       999 TEST       TRANZACT        1111 23-NOV-21        100          0         10                                                                                                                   
+      7369 SMITH      CLERK           7902 17-DEC-80        800                    20                                                                                                                   
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30                                                                                                                   
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30                                                                                                                   
+      7566 JONES      MANAGER         7839 02-APR-81       2975                    20                                                                                                                   
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30                                                                                                                   
+      7698 BLAKE      MANAGER         7839 01-MAY-81       2850                    30                                                                                                                   
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10                                                                                                                   
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20                                                                                                                   
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10                                                                                                                   
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30                                                                                                                   
+      7876 ADAMS      CLERK           7788 23-MAY-87       1100                    20                                                                                                                   
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30                                                                                                                   
+      7902 FORD       ANALYST         7566 03-DEC-81       3000                    20                                                                                                                   
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10                                                                                                                   
+
+15 rows selected.
+
+SQL> create index emp_idx
+  2  on emp_copy(deptno, empno)
+  3  pctfree 30
+  4  storage(initial 200k next 200k
+  5  pctincrease 0 maxextents 50);
+
+Index created.
+
+SQL> select index_name, index_type, status from dba_indexes
+  2  where owner = 'ABD1' and
+  3  table_name = 'emp_copy';
+
+no rows selected
+
+SQL>  select index_name, index_type, table_name, status from dba_indexes
+  2   where owner='ABD1';
+
+INDEX_NAME                                                                                                                       INDEX_TYPE                                                             
+-------------------------------------------------------------------------------------------------------------------------------- ---------------------------                                            
+TABLE_NAME                                                                                                                       STATUS                                                                 
+-------------------------------------------------------------------------------------------------------------------------------- --------                                                               
+PK_DEPT                                                                                                                          NORMAL                                                                 
+DEPT                                                                                                                             VALID                                                                  
+                                                                                                                                                                                                        
+PK_EMP                                                                                                                           NORMAL                                                                 
+EMP                                                                                                                              VALID                                                                  
+                                                                                                                                                                                                        
+INDEX_EX2                                                                                                                        NORMAL                                                                 
+EMP                                                                                                                              VALID                                                                  
+                                                                                                                                                                                                        
+SYS_C007426                                                                                                                      NORMAL                                                                 
+DEPT                                                                                                                             VALID                                                                  
+                                                                                                                                                                                                        
+EMP_IDX                                                                                                                          NORMAL                                                                 
+EMP_COPY                                                                                                                         VALID                                                                  
+                                                                                                                                                                                                        
+
+SQL> select index_name, index_type, status from dba_indexes
+  2  where owner = 'ABD1' and
+  3  table_name = 'EMP_COPY';
+
+INDEX_NAME                                                                                                                       INDEX_TYPE                  STATUS                                     
+-------------------------------------------------------------------------------------------------------------------------------- --------------------------- --------                                   
+EMP_IDX                                                                                                                          NORMAL                      VALID                                      
+
+SQL> EXERCITIUL 2
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> SA SE CREEZE UN NOU FISIER DE DATE DE DIMENSIUNEA DE 1MB. IN ACEST FISIER SA SE FACA O EXTENSIE DE 100K PENTRU INDEXUL CREAT.
+SP2-0734: unknown command beginning "SA SE CREE..." - rest of line ignored.
+SQL> alter tablespace users
+  2  add datafile 'd:\index1.dbf' size 1MB;
+add datafile 'd:\index1.dbf' size 1MB
+                                   *
+ERROR at line 2:
+ORA-00933: SQL command not properly ended 
+
+
+SQL> alter tablespace users
+  2  add datafile 'd:\index1.dbf' size 1M;
+
+Tablespace altered.
+
+SQL> alter index emp_idx
+  2  allocate extent (size 100k datafile 'd:\index1.dbf');
+alter index emp_idx
+*
+ERROR at line 1:
+ORA-03284: datafile or tempfile d:\index1.dbf is not a member of tablespace BD_DATA 
+
+
+SQL> alter tablespace bd_data
+  2  add datafile 'd:\index1.dbf' size 1M;
+alter tablespace bd_data
+*
+ERROR at line 1:
+ORA-01537: cannot add file 'd:\index1.dbf' - file already part of database 
+
+
+SQL> alter tablespace bd_data
+  2  add datafile 'd:\index2.dbf' size 1M;
+
+Tablespace altered.
+
+SQL> alter index emp_idx
+  2  allocate extent (size 100k datafile 'd:\index2.dbf');
+
+Index altered.
+
+SQL> EXERCITIUL 3
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> VERIFICATI IN DICTIONAR NUMARUL DE BLOCURI ALOCATE INDEXULUI SI CARE ESTE PROCENTUL UTILIZAT DIN SPATIUL ALOCAT
+SP2-0734: unknown command beginning "VERIFICATI..." - rest of line ignored.
+SQL> select blocks, used_space from index_stats
+  2  where name = 'EMP_IDX';
+
+no rows selected
+
+SQL> select name, blocks, used_space from index_stats;
+
+no rows selected
+
+SQL> desc index_stats;
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ HEIGHT                                                                                                                     NUMBER
+ BLOCKS                                                                                                                     NUMBER
+ NAME                                                                                                                       VARCHAR2(128)
+ PARTITION_NAME                                                                                                             VARCHAR2(128)
+ LF_ROWS                                                                                                                    NUMBER
+ LF_BLKS                                                                                                                    NUMBER
+ LF_ROWS_LEN                                                                                                                NUMBER
+ LF_BLK_LEN                                                                                                                 NUMBER
+ BR_ROWS                                                                                                                    NUMBER
+ BR_BLKS                                                                                                                    NUMBER
+ BR_ROWS_LEN                                                                                                                NUMBER
+ BR_BLK_LEN                                                                                                                 NUMBER
+ DEL_LF_ROWS                                                                                                                NUMBER
+ DEL_LF_ROWS_LEN                                                                                                            NUMBER
+ DISTINCT_KEYS                                                                                                              NUMBER
+ MOST_REPEATED_KEY                                                                                                          NUMBER
+ BTREE_SPACE                                                                                                                NUMBER
+ USED_SPACE                                                                                                                 NUMBER
+ PCT_USED                                                                                                                   NUMBER
+ ROWS_PER_KEY                                                                                                               NUMBER
+ BLKS_GETS_PER_ACCESS                                                                                                       NUMBER
+ PRE_ROWS                                                                                                                   NUMBER
+ PRE_ROWS_LEN                                                                                                               NUMBER
+ OPT_CMPR_COUNT                                                                                                             NUMBER
+ OPT_CMPR_PCTSAVE                                                                                                           NUMBER
+ DEL_LF_CMP_ROWS                                                                                                            NUMBER
+ PRG_LF_CMP_ROWS                                                                                                            NUMBER
+ LF_CMP_ROWS                                                                                                                NUMBER
+ LF_CMP_ROWS_LEN                                                                                                            NUMBER
+ LF_UNCMP_ROWS                                                                                                              NUMBER
+ LF_UNCMP_ROWS_LEN                                                                                                          NUMBER
+ LF_SUF_ROWS_LEN                                                                                                            NUMBER
+ LF_CMP_ROWS_UNCMP_LEN                                                                                                      NUMBER
+ LF_CMP_RECMP_COUNT                                                                                                         NUMBER
+ LF_CMP_LOCK_VEC_LEN                                                                                                        NUMBER
+ LF_CMP_BLKS                                                                                                                NUMBER
+ LF_UNCMP_BLKS                                                                                                              NUMBER
+
+SQL> select name, blocks, used_space, pct_used, distinct_keys, lf_rows, del_lf_rows
+  2   from index_stats ;
+
+no rows selected
+
+SQL> select name from index_stats;
+
+no rows selected
+
+SQL> analyze index emp_idx validate structure;
+
+Index analyzed.
+
+SQL> select blocks, used_space, pct_used
+  2  from index_stats
+  3  where name = 'EMP_IDX';
+
+    BLOCKS USED_SPACE   PCT_USED                                                                                                                                                                        
+---------- ---------- ----------                                                                                                                                                                        
+        48        269          4                                                                                                                                                                        
+
+SQL> EXERCITIUL 4
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> FACETI O LISTA CU NUMELE INSTANTEI CURENTE, NUMELE INDECSILOR SI TABELELE AFERENTE
+SP2-0734: unknown command beginning "FACETI O L..." - rest of line ignored.
+SQL> EXERCITIUL 5
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> MONITORIZATI INDEXUL CREAT SI VERIFICATI IN DICTIONAR DATA SI ORA CAND A INCEPUT MONITORIZAREA
+SP2-0734: unknown command beginning "MONITORIZA..." - rest of line ignored.
+SP2-0044: For a list of known commands enter HELP
+and to leave enter EXIT.
+SQL> alter index emp_idx
+  2  monitoring usage;
+
+Index altered.
+
+SQL> select index_name, start_monitoring from v$object_usage
+  2  where index_name = 'EMP_IDX';
+
+INDEX_NAME                                                                                                                       START_MONITORING                                                       
+-------------------------------------------------------------------------------------------------------------------------------- -------------------                                                    
+EMP_IDX                                                                                                                          12/14/2021 11:08:15                                                    
+
+SQL> update login_lab_ubd set data_sf=sysdate where laborator='Lab10';
+
+1 row updated.
+
+SQL> 
+SQL> update login_lab_ubd set durata=round((data_sf-data_in)*24*60) where laborator='Lab10';
+
+1 row updated.
+
+SQL> 
+SQL> commit;
+
+Commit complete.
+
+SQL> 
+SQL> select instance_number,instance_name,to_char(startup_time, 'dd-mm-yyyy hh:mi:ss'), host_name from v$instance;
+
+INSTANCE_NUMBER INSTANCE_NAME    TO_CHAR(STARTUP_TIM HOST_NAME                                                                                                                                          
+--------------- ---------------- ------------------- ----------------------------------------------------------------                                                                                   
+              1 orcl             22-11-2021 07:33:06 DESKTOP-E0N7ML4                                                                                                                                    
+
+SQL> 
+SQL> select nume_stud, grupa, laborator, to_char(data_in, 'dd-mm-yyyy hh:mi:ss') data_inceput, to_char(data_sf, 'dd-mm-yyyy hh:mi:ss')data_sfarsit, durata minute_lucrate from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  DATA_INCEPUT        DATA_SFARSIT        MINUTE_LUCRATE                                                                                             
+------------------------------ ---------- ---------- ------------------- ------------------- --------------                                                                                             
+Pantelimon Andreea             341C5      Lab6       09-11-2021 10:04:21 09-11-2021 11:44:43            100                                                                                             
+Pantelimon Andreea             341C5      Lab8       23-11-2021 10:08:25 23-11-2021 11:44:52             96                                                                                             
+Pantelimon Andreea             341C5      Lab2       17-10-2021 05:40:39 17-10-2021 07:33:56            113                                                                                             
+Pantelimon Andreea             341C5      Lab4       26-10-2021 10:18:49 26-10-2021 11:31:22             73                                                                                             
+Pantelimon Andreea             341C5      Lab3       19-10-2021 10:31:03 19-10-2021 11:42:02             71                                                                                             
+Pantelimon Andreea             341C5      Lab5       02-11-2021 10:39:03 02-11-2021 11:48:38             70                                                                                             
+Pantelimon Andreea             341C5      Lab9       07-12-2021 10:03:18 07-12-2021 11:49:18            106                                                                                             
+Pantelimon Andreea             341C5      Lab10      14-12-2021 10:08:55 14-12-2021 11:27:32             79                                                                                             
+Pantelimon Andreea             341C5      Lab7       16-11-2021 10:09:42                                                                                                                                
+Pantelimon Andreea             341C5      Lab7_c     16-11-2021 11:55:00 16-11-2021 11:58:38              4                                                                                             
+
+10 rows selected.
+
+SQL> spool off

@@ -1,0 +1,423 @@
+SQL> set lines 200
+SQL> set pages 100
+SQL> select to_char(sysdate, 'dd-mm-yyyy hh:mi:ss') from dual;
+
+TO_CHAR(SYSDATE,'DD                                                                                                                                                                                     
+-------------------                                                                                                                                                                                     
+11-01-2022 10:49:31                                                                                                                                                                                     
+
+SQL> insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab11_c', user, sysdate, null, null);
+
+1 row created.
+
+SQL> 
+SQL> select * from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  NUME_USER  DATA_IN   DATA_SF       DURATA                                                                                                          
+------------------------------ ---------- ---------- ---------- --------- --------- ----------                                                                                                          
+Pantelimon Andreea             341C5      Lab6       ABD1       09-NOV-21 09-NOV-21        100                                                                                                          
+Pantelimon Andreea             341C5      Lab8       ABD1       23-NOV-21 23-NOV-21         96                                                                                                          
+Pantelimon Andreea             341C5      Lab2       ABD1       17-OCT-21 17-OCT-21        113                                                                                                          
+Pantelimon Andreea             341C5      Lab4       ABD1       26-OCT-21 26-OCT-21         73                                                                                                          
+Pantelimon Andreea             341C5      Lab11      ABD1       11-JAN-22 11-JAN-22         41                                                                                                          
+Pantelimon Andreea             341C5      Lab11_c    ABD1       11-JAN-22                                                                                                                               
+Pantelimon Andreea             341C5      Lab3       ABD1       19-OCT-21 19-OCT-21         71                                                                                                          
+Pantelimon Andreea             341C5      Lab5       ABD1       02-NOV-21 02-NOV-21         70                                                                                                          
+Pantelimon Andreea             341C5      Lab9       ABD1       07-DEC-21 07-DEC-21        106                                                                                                          
+Pantelimon Andreea             341C5      Lab10      ABD1       14-DEC-21 14-DEC-21         79                                                                                                          
+Pantelimon Andreea             341C5      Lab7       ABD1       16-NOV-21                                                                                                                               
+Pantelimon Andreea             341C5      Lab7_c     ABD1       16-NOV-21 16-NOV-21          4                                                                                                          
+
+12 rows selected.
+
+SQL> connect sys/Ryuuuzaki99. as sysdba
+Connected.
+SQL> alter session set "_ORACLE_SCRIPT"=true;
+
+Session altered.
+
+SQL> create user test identified by test
+  2  default tablespace ubd_data1
+  3  temporary tablespace ubd_temp
+  4  quota 10M on ubd_data1;
+create user test identified by test
+*
+ERROR at line 1:
+ORA-00959: tablespace 'UBD_TEMP' does not exist 
+
+
+SQL> create user test identified by test
+  2  default tablespace ubd_data1
+  3  temporary tablespace ubd_temp1
+  4  quota 10M on ubd_data1;
+create user test identified by test
+*
+ERROR at line 1:
+ORA-00959: tablespace 'UBD_TEMP1' does not exist 
+
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  create user test identified by test
+  2  default tablespace ubd_data1
+  3  temporary tablespace undo_lab
+  4* quota 10M on ubd_data1
+SQL> create user test identified by test
+  2  default tablespace ubd_data1
+  3  temporary tablespace undo_lab
+  4  quota 10M on ubd_data1
+  5  /
+create user test identified by test
+*
+ERROR at line 1:
+ORA-30034: Undo tablespace cannot be specified as temporary tablespace 
+
+
+SQL> create temporary tablespace temp tempfile
+  2  'D:\temp.dbf' size 100m extent management
+  3  local uniform size 5m;
+create temporary tablespace temp tempfile
+*
+ERROR at line 1:
+ORA-01543: tablespace 'TEMP' already exists 
+
+
+SQL> create user test identified by test
+  2  default tablespace ubd_data1
+  3  temporary tablespace temp
+  4  quota 10m on ubd_data1;
+
+User created.
+
+SQL> alter user test identified by pass_test;
+
+User altered.
+
+SQL> grant create session to test;
+
+Grant succeeded.
+
+SQL> grant create session to test with admin option;
+
+Grant succeeded.
+
+SQL> alter user test quota 5M on ubd_data1;
+
+User altered.
+
+SQL> alter user test quota unlimited on ubd_data1;
+
+User altered.
+
+SQL> alter user test quota 0M on ubd_data1;
+
+User altered.
+
+SQL> alter user test account lock;
+
+User altered.
+
+SQL> con test
+SP2-0042: unknown command "con test" - rest of line ignored.
+SQL> conn test
+ERROR:
+ORA-28000: The account is locked. 
+
+
+Warning: You are no longer connected to ORACLE.
+SQL> alter user test account unlock;
+SP2-0640: Not connected
+SQL> conn sys/Ryuuuzaki99. as sysdba
+Connected.
+SQL> alter user test account unlock;
+
+User altered.
+
+SQL> conn test
+Connected.
+SQL> desc dba_users
+ERROR:
+ORA-04043: object "SYS"."DBA_USERS" does not exist 
+
+
+SQL> conn abd1
+Connected.
+SQL> create user test1 identified by test1
+  2  default tablespace ubd_data1
+  3  temporary tablespace temp
+  4  quota 10M on ubd_data1;
+create user test1 identified by test1
+            *
+ERROR at line 1:
+ORA-65096: invalid common user or role name 
+
+
+SQL> eedit
+SP2-0042: unknown command "eedit" - rest of line ignored.
+SQL> edit
+Wrote file afiedt.buf
+
+  1  create user test1 identified by test1
+  2  default tablespace ubd_data1
+  3  temporary tablespace temp
+  4* quota 10M on ubd_data1
+SQL> alter session set "_ORACLE_SCRIPT"=true;
+
+Session altered.
+
+SQL> create user test1 identified by test1
+  2  default tablespace ubd_data1
+  3  temporary tablespace temp
+  4  quota 10M on ubd_data1
+  5  /
+
+User created.
+
+SQL> desc dba_users
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ USERNAME                                                                                                          NOT NULL VARCHAR2(128)
+ USER_ID                                                                                                           NOT NULL NUMBER
+ PASSWORD                                                                                                                   VARCHAR2(4000)
+ ACCOUNT_STATUS                                                                                                    NOT NULL VARCHAR2(32)
+ LOCK_DATE                                                                                                                  DATE
+ EXPIRY_DATE                                                                                                                DATE
+ DEFAULT_TABLESPACE                                                                                                NOT NULL VARCHAR2(30)
+ TEMPORARY_TABLESPACE                                                                                              NOT NULL VARCHAR2(30)
+ LOCAL_TEMP_TABLESPACE                                                                                                      VARCHAR2(30)
+ CREATED                                                                                                           NOT NULL DATE
+ PROFILE                                                                                                           NOT NULL VARCHAR2(128)
+ INITIAL_RSRC_CONSUMER_GROUP                                                                                                VARCHAR2(128)
+ EXTERNAL_NAME                                                                                                              VARCHAR2(4000)
+ PASSWORD_VERSIONS                                                                                                          VARCHAR2(17)
+ EDITIONS_ENABLED                                                                                                           VARCHAR2(1)
+ AUTHENTICATION_TYPE                                                                                                        VARCHAR2(8)
+ PROXY_ONLY_CONNECT                                                                                                         VARCHAR2(1)
+ COMMON                                                                                                                     VARCHAR2(3)
+ LAST_LOGIN                                                                                                                 TIMESTAMP(9) WITH TIME ZONE
+ ORACLE_MAINTAINED                                                                                                          VARCHAR2(1)
+ INHERITED                                                                                                                  VARCHAR2(3)
+ DEFAULT_COLLATION                                                                                                          VARCHAR2(100)
+ IMPLICIT                                                                                                                   VARCHAR2(3)
+ ALL_SHARD                                                                                                                  VARCHAR2(3)
+ PASSWORD_CHANGE_DATE                                                                                                       DATE
+
+SQL> select username, default_tablespace, temporary_tablespace from dba_users;
+
+USERNAME                                                                                                                         DEFAULT_TABLESPACE             TEMPORARY_TABLESPACE                    
+-------------------------------------------------------------------------------------------------------------------------------- ------------------------------ ------------------------------          
+SYS                                                                                                                              SYSTEM                         TEMP                                    
+SYSTEM                                                                                                                           SYSTEM                         TEMP                                    
+XS$NULL                                                                                                                          SYSTEM                         TEMP                                    
+OJVMSYS                                                                                                                          SYSTEM                         TEMP                                    
+LBACSYS                                                                                                                          SYSTEM                         TEMP                                    
+OUTLN                                                                                                                            SYSTEM                         TEMP                                    
+SYS$UMF                                                                                                                          SYSTEM                         TEMP                                    
+DBSNMP                                                                                                                           SYSAUX                         TEMP                                    
+APPQOSSYS                                                                                                                        SYSAUX                         TEMP                                    
+DBSFWUSER                                                                                                                        SYSAUX                         TEMP                                    
+GGSYS                                                                                                                            SYSAUX                         TEMP                                    
+ANONYMOUS                                                                                                                        SYSAUX                         TEMP                                    
+CTXSYS                                                                                                                           SYSAUX                         TEMP                                    
+DVSYS                                                                                                                            SYSAUX                         TEMP                                    
+DVF                                                                                                                              SYSAUX                         TEMP                                    
+GSMADMIN_INTERNAL                                                                                                                SYSAUX                         TEMP                                    
+MDSYS                                                                                                                            SYSAUX                         TEMP                                    
+OLAPSYS                                                                                                                          SYSAUX                         TEMP                                    
+XDB                                                                                                                              SYSAUX                         TEMP                                    
+WMSYS                                                                                                                            SYSAUX                         TEMP                                    
+GSMCATUSER                                                                                                                       USERS                          TEMP                                    
+MDDATA                                                                                                                           USERS                          TEMP                                    
+SYSBACKUP                                                                                                                        USERS                          TEMP                                    
+REMOTE_SCHEDULER_AGENT                                                                                                           USERS                          TEMP                                    
+GSMUSER                                                                                                                          USERS                          TEMP                                    
+SYSRAC                                                                                                                           USERS                          TEMP                                    
+GSMROOTUSER                                                                                                                      USERS                          TEMP                                    
+SI_INFORMTN_SCHEMA                                                                                                               USERS                          TEMP                                    
+AUDSYS                                                                                                                           USERS                          TEMP                                    
+DIP                                                                                                                              USERS                          TEMP                                    
+ORDPLUGINS                                                                                                                       USERS                          TEMP                                    
+SYSKM                                                                                                                            USERS                          TEMP                                    
+ORDDATA                                                                                                                          USERS                          TEMP                                    
+ORACLE_OCM                                                                                                                       USERS                          TEMP                                    
+SYSDG                                                                                                                            USERS                          TEMP                                    
+ORDSYS                                                                                                                           USERS                          TEMP                                    
+TEST1                                                                                                                            UBD_DATA1                      TEMP                                    
+TEST                                                                                                                             UBD_DATA1                      TEMP                                    
+ABD2                                                                                                                             BD_DATA                        BD_TEMP                                 
+ABD1                                                                                                                             BD_DATA                        BD_TEMP                                 
+
+40 rows selected.
+
+SQL>  desc dba_ts_quotas
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ TABLESPACE_NAME                                                                                                   NOT NULL VARCHAR2(30)
+ USERNAME                                                                                                          NOT NULL VARCHAR2(128)
+ BYTES                                                                                                                      NUMBER
+ MAX_BYTES                                                                                                                  NUMBER
+ BLOCKS                                                                                                                     NUMBER
+ MAX_BLOCKS                                                                                                                 NUMBER
+ DROPPED                                                                                                                    VARCHAR2(3)
+
+SQL>  select username, tablespace_name, max_bytes, bytes from dba_ts_quotas;
+
+USERNAME                                                                                                                         TABLESPACE_NAME                 MAX_BYTES      BYTES                   
+-------------------------------------------------------------------------------------------------------------------------------- ------------------------------ ---------- ----------                   
+AUDSYS                                                                                                                           SYSAUX                                 -1    2621440                   
+OUTLN                                                                                                                            SYSTEM                                 -1     589824                   
+GSMADMIN_INTERNAL                                                                                                                SYSAUX                                 -1     917504                   
+DBSFWUSER                                                                                                                        SYSAUX                                 -1          0                   
+APPQOSSYS                                                                                                                        SYSAUX                                 -1          0                   
+GGSYS                                                                                                                            SYSAUX                                 -1          0                   
+MDSYS                                                                                                                            SYSAUX                                 -1  177143808                   
+MDSYS                                                                                                                            SYSTEM                                 -1          0                   
+OLAPSYS                                                                                                                          SYSAUX                                 -1          0                   
+LBACSYS                                                                                                                          SYSTEM                                 -1     327680                   
+ABD1                                                                                                                             BD_DATA                          10485760   26345472                   
+ABD2                                                                                                                             BD_DATA                          10485760          0                   
+TEST1                                                                                                                            UBD_DATA1                        10485760          0                   
+
+13 rows selected.
+
+SQL>  desc user_users
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ USERNAME                                                                                                          NOT NULL VARCHAR2(128)
+ USER_ID                                                                                                           NOT NULL NUMBER
+ ACCOUNT_STATUS                                                                                                    NOT NULL VARCHAR2(32)
+ LOCK_DATE                                                                                                                  DATE
+ EXPIRY_DATE                                                                                                                DATE
+ DEFAULT_TABLESPACE                                                                                                NOT NULL VARCHAR2(30)
+ TEMPORARY_TABLESPACE                                                                                              NOT NULL VARCHAR2(30)
+ LOCAL_TEMP_TABLESPACE                                                                                                      VARCHAR2(30)
+ CREATED                                                                                                           NOT NULL DATE
+ INITIAL_RSRC_CONSUMER_GROUP                                                                                                VARCHAR2(128)
+ EXTERNAL_NAME                                                                                                              VARCHAR2(4000)
+ PROXY_ONLY_CONNECT                                                                                                         VARCHAR2(1)
+ COMMON                                                                                                                     VARCHAR2(3)
+ ORACLE_MAINTAINED                                                                                                          VARCHAR2(1)
+ INHERITED                                                                                                                  VARCHAR2(3)
+ DEFAULT_COLLATION                                                                                                          VARCHAR2(100)
+ IMPLICIT                                                                                                                   VARCHAR2(3)
+ ALL_SHARD                                                                                                                  VARCHAR2(3)
+ PASSWORD_CHANGE_DATE                                                                                                       DATE
+
+SQL>  select user_id, username, created, lock_date from user_users;
+
+   USER_ID USERNAME                                                                                                                         CREATED   LOCK_DATE                                         
+---------- -------------------------------------------------------------------------------------------------------------------------------- --------- ---------                                         
+       107 ABD1                                                                                                                             17-OCT-21                                                   
+
+SQL> EXERCITIUL 1
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> SA SE CREEZE UN USER NOU SI SA I SE ACORDE PRIVILEGII PENTRU CONECTARE LA BAZA DE DATE
+SP2-0734: unknown command beginning "SA SE CREE..." - rest of line ignored.
+SQL> create user new_user identified by new
+  2  default tablespace ubd_data1
+  3  temporary tablespace temp
+  4  quota 10M on ubd_data1;
+
+User created.
+
+SQL> grant create session to new_user;
+
+Grant succeeded.
+
+SQL> EXERCITIUL 2
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> SA SE ASIGNEZE USERULUI NOU CREAT PRIVILEGII DE INSERARE, MODIFICARE SI VIZUALIZARE DE DATE PE TABELA DEPT DIN SCHEMA CURENTA, APOI SA I SE REVOCE PRIVILEGIUL DE MODIFICARE DE DATE
+SP2-0734: unknown command beginning "SA SE ASIG..." - rest of line ignored.
+SQL> 
+SQL> 
+SQL> grant insert, update, select on dept to new_user;
+
+Grant succeeded.
+
+SQL> conn new_user
+Connected.
+SQL> select * from abd1.dept;
+
+    DEPTNO DNAME          LOC                                                                                                                                                                           
+---------- -------------- -------------                                                                                                                                                                 
+        10 ACCOUNTING     NEW YORK                                                                                                                                                                      
+        20 RESEARCH       DALLAS                                                                                                                                                                        
+        30 SALES          CHICAGO                                                                                                                                                                       
+        40 OPERATIONS     BOSTON                                                                                                                                                                        
+
+SQL> conn abd1
+Connected.
+SQL> revoke select, insert, update on dept from new_user;
+
+Revoke succeeded.
+
+SQL> conn new_user
+Connected.
+SQL> select * from abd1.dept;
+select * from abd1.dept
+                   *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> conn abd1
+Connected.
+SQL> 
+SQL> EXERCITIUL 3
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> SA SE ALOCE UN SPATIU DE 10MB IN TABLESPACEUL PERMANENT BD_DATA PENTRU USERUL CREAT
+SP2-0734: unknown command beginning "SA SE ALOC..." - rest of line ignored.
+SQL> alter user new_user qouta 10M on ubd_data1;
+alter user new_user qouta 10M on ubd_data1
+                    *
+ERROR at line 1:
+ORA-00922: missing or invalid option 
+
+
+SQL> alter user new_user quota 10M on ubd_data1;
+
+User altered.
+
+SQL> update login_lab_ubd set data_sf=sysdate where laborator='Lab11_c';
+
+1 row updated.
+
+SQL> 
+SQL> update login_lab_ubd set durata=round((data_sf-data_in)*24*60) where laborator='Lab11_c';
+
+1 row updated.
+
+SQL> 
+SQL> commit;
+
+Commit complete.
+
+SQL> 
+SQL> select instance_number,instance_name,to_char(startup_time, 'dd-mm-yyyy hh:mi:ss'), host_name from v$instance;
+
+INSTANCE_NUMBER INSTANCE_NAME    TO_CHAR(STARTUP_TIM HOST_NAME                                                                                                                                          
+--------------- ---------------- ------------------- ----------------------------------------------------------------                                                                                   
+              1 orcl             29-12-2021 06:13:03 DESKTOP-E0N7ML4                                                                                                                                    
+
+SQL> 
+SQL> select nume_stud, grupa, laborator, to_char(data_in, 'dd-mm-yyyy hh:mi:ss') data_inceput, to_char(data_sf, 'dd-mm-yyyy hh:mi:ss')data_sfarsit, durata minute_lucrate from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  DATA_INCEPUT        DATA_SFARSIT        MINUTE_LUCRATE                                                                                             
+------------------------------ ---------- ---------- ------------------- ------------------- --------------                                                                                             
+Pantelimon Andreea             341C5      Lab6       09-11-2021 10:04:21 09-11-2021 11:44:43            100                                                                                             
+Pantelimon Andreea             341C5      Lab8       23-11-2021 10:08:25 23-11-2021 11:44:52             96                                                                                             
+Pantelimon Andreea             341C5      Lab2       17-10-2021 05:40:39 17-10-2021 07:33:56            113                                                                                             
+Pantelimon Andreea             341C5      Lab4       26-10-2021 10:18:49 26-10-2021 11:31:22             73                                                                                             
+Pantelimon Andreea             341C5      Lab11      11-01-2022 10:06:56 11-01-2022 10:48:24             41                                                                                             
+Pantelimon Andreea             341C5      Lab11_c    11-01-2022 10:49:38 11-01-2022 11:37:40             48                                                                                             
+Pantelimon Andreea             341C5      Lab3       19-10-2021 10:31:03 19-10-2021 11:42:02             71                                                                                             
+Pantelimon Andreea             341C5      Lab5       02-11-2021 10:39:03 02-11-2021 11:48:38             70                                                                                             
+Pantelimon Andreea             341C5      Lab9       07-12-2021 10:03:18 07-12-2021 11:49:18            106                                                                                             
+Pantelimon Andreea             341C5      Lab10      14-12-2021 10:08:55 14-12-2021 11:27:32             79                                                                                             
+Pantelimon Andreea             341C5      Lab7       16-11-2021 10:09:42                                                                                                                                
+Pantelimon Andreea             341C5      Lab7_c     16-11-2021 11:55:00 16-11-2021 11:58:38              4                                                                                             
+
+12 rows selected.
+
+SQL> spool off;

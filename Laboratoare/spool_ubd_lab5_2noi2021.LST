@@ -1,0 +1,366 @@
+SQL> set lines 200
+SQL> set pages 100
+SQL> select to_char(sysdate, 'dd-mm-yyyy hh:mi:ss') from dual;
+
+TO_CHAR(SYSDATE,'DD                                                                                                                                                                                     
+-------------------                                                                                                                                                                                     
+02-11-2021 10:38:56                                                                                                                                                                                     
+
+SQL> insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab5', user, sysdate, null, null);
+
+1 row created.
+
+SQL> select * from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  NUME_USER  DATA_IN   DATA_SF       DURATA                                                                                                          
+------------------------------ ---------- ---------- ---------- --------- --------- ----------                                                                                                          
+Pantelimon Andreea             341C5      Lab2       ABD1       17-OCT-21 17-OCT-21        113                                                                                                          
+Pantelimon Andreea             341C5      Lab4       ABD1       26-OCT-21 26-OCT-21         73                                                                                                          
+Pantelimon Andreea             341C5      Lab3       ABD1       19-OCT-21 19-OCT-21         71                                                                                                          
+Pantelimon Andreea             341C5      Lab5       ABD1       02-NOV-21                                                                                                                               
+
+SQL> desc v$logfile
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ GROUP#                                                                                                                     NUMBER
+ STATUS                                                                                                                     VARCHAR2(7)
+ TYPE                                                                                                                       VARCHAR2(7)
+ MEMBER                                                                                                                     VARCHAR2(513)
+ IS_RECOVERY_DEST_FILE                                                                                                      VARCHAR2(3)
+ CON_ID                                                                                                                     NUMBER
+
+SQL> select * from v$logfile;
+
+    GROUP# STATUS  TYPE                                                                                                                                                                                 
+---------- ------- -------                                                                                                                                                                              
+MEMBER                                                                                                                                                                                                  
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+IS_     CON_ID                                                                                                                                                                                          
+--- ----------                                                                                                                                                                                          
+         3         ONLINE                                                                                                                                                                               
+D:\APLICATII\ORADATA\ORCL\REDO03.LOG                                                                                                                                                                    
+NO           0                                                                                                                                                                                          
+                                                                                                                                                                                                        
+         2         ONLINE                                                                                                                                                                               
+D:\APLICATII\ORADATA\ORCL\REDO02.LOG                                                                                                                                                                    
+NO           0                                                                                                                                                                                          
+                                                                                                                                                                                                        
+         1         ONLINE                                                                                                                                                                               
+D:\APLICATII\ORADATA\ORCL\REDO01.LOG                                                                                                                                                                    
+NO           0                                                                                                                                                                                          
+                                                                                                                                                                                                        
+
+SQL>  select name, log_mode, resetlogs_time from v$database;
+
+NAME      LOG_MODE     RESETLOGS                                                                                                                                                                        
+--------- ------------ ---------                                                                                                                                                                        
+ORCL      NOARCHIVELOG 17-OCT-21                                                                                                                                                                        
+
+SQL>  select groups, current_group#, sequence#, instance, status from v$thread;
+
+    GROUPS CURRENT_GROUP#  SEQUENCE# INSTANCE                                                                         STATUS                                                                            
+---------- -------------- ---------- -------------------------------------------------------------------------------- ------                                                                            
+         3              3         12 orcl                                                                             OPEN                                                                              
+
+SQL>  select group#, members, bytes, archived, status from v$log;
+
+    GROUP#    MEMBERS      BYTES ARC STATUS                                                                                                                                                             
+---------- ---------- ---------- --- ----------------                                                                                                                                                   
+         1          1  209715200 NO  INACTIVE                                                                                                                                                           
+         2          1  209715200 NO  INACTIVE                                                                                                                                                           
+         3          1  209715200 NO  CURRENT                                                                                                                                                            
+
+SQL> alter database add logfile member 'E:\TEMP\log2.rdo' to group 1;
+alter database add logfile member 'E:\TEMP\log2.rdo' to group 1
+*
+ERROR at line 1:
+ORA-00349: failure obtaining block size for 'E:\TEMP\log2.rdo' 
+ORA-27037: unable to obtain file status 
+OSD-04011: GetFileInformationByHandle() failure, unable to obtain file info 
+O/S-Error: (OS 2) The system cannot find the file specified. 
+
+
+SQL> select * from v$logfile;
+
+    GROUP# STATUS  TYPE                                                                                                                                                                                 
+---------- ------- -------                                                                                                                                                                              
+MEMBER                                                                                                                                                                                                  
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+IS_     CON_ID                                                                                                                                                                                          
+--- ----------                                                                                                                                                                                          
+         3         ONLINE                                                                                                                                                                               
+D:\APLICATII\ORADATA\ORCL\REDO03.LOG                                                                                                                                                                    
+NO           0                                                                                                                                                                                          
+                                                                                                                                                                                                        
+         2         ONLINE                                                                                                                                                                               
+D:\APLICATII\ORADATA\ORCL\REDO02.LOG                                                                                                                                                                    
+NO           0                                                                                                                                                                                          
+                                                                                                                                                                                                        
+         1         ONLINE                                                                                                                                                                               
+D:\APLICATII\ORADATA\ORCL\REDO01.LOG                                                                                                                                                                    
+NO           0                                                                                                                                                                                          
+                                                                                                                                                                                                        
+
+SQL> select instance_name, status, archiver from v$instance;
+
+INSTANCE_NAME    STATUS       ARCHIVE                                                                                                                                                                   
+---------------- ------------ -------                                                                                                                                                                   
+orcl             OPEN         STOPPED                                                                                                                                                                   
+
+SQL> desc v$loghist
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ THREAD#                                                                                                                    NUMBER
+ SEQUENCE#                                                                                                                  NUMBER
+ FIRST_CHANGE#                                                                                                              NUMBER
+ FIRST_TIME                                                                                                                 DATE
+ SWITCH_CHANGE#                                                                                                             NUMBER
+ CON_ID                                                                                                                     NUMBER
+
+SQL> select * from v$loghist;
+
+   THREAD#  SEQUENCE# FIRST_CHANGE# FIRST_TIM SWITCH_CHANGE#     CON_ID                                                                                                                                 
+---------- ---------- ------------- --------- -------------- ----------                                                                                                                                 
+         1          1       1928875 17-OCT-21        1949923          0                                                                                                                                 
+         1          2       1949923 17-OCT-21        2030639          0                                                                                                                                 
+         1          3       2030639 18-OCT-21        2112070          0                                                                                                                                 
+         1          4       2112070 19-OCT-21        2209399          0                                                                                                                                 
+         1          5       2209399 20-OCT-21        2288968          0                                                                                                                                 
+         1          6       2288968 22-OCT-21        2366418          0                                                                                                                                 
+         1          7       2366418 23-OCT-21        2439584          0                                                                                                                                 
+         1          8       2439584 25-OCT-21        2524601          0                                                                                                                                 
+         1          9       2524601 26-OCT-21        2604660          0                                                                                                                                 
+         1         10       2604660 28-OCT-21        2751520          0                                                                                                                                 
+         1         11       2751520 29-OCT-21        2813740          0                                                                                                                                 
+
+11 rows selected.
+
+SQL> select name from v$database;
+
+NAME                                                                                                                                                                                                    
+---------                                                                                                                                                                                               
+ORCL                                                                                                                                                                                                    
+
+SQL> select controlfile_type from v$database;
+
+CONTROL                                                                                                                                                                                                 
+-------                                                                                                                                                                                                 
+CURRENT                                                                                                                                                                                                 
+
+SQL> select controlfile_created from v$database;
+
+CONTROLFI                                                                                                                                                                                               
+---------                                                                                                                                                                                               
+17-OCT-21                                                                                                                                                                                               
+
+SQL> select * from v$database;
+
+      DBID NAME      CREATED   RESETLOGS_CHANGE# RESETLOGS PRIOR_RESETLOGS_CHANGE# PRIOR_RES LOG_MODE     CHECKPOINT_CHANGE# ARCHIVE_CHANGE# CONTROL CONTROLFI CONTROLFILE_SEQUENCE# CONTROLFILE_CHANGE#
+---------- --------- --------- ----------------- --------- ----------------------- --------- ------------ ------------------ --------------- ------- --------- --------------------- -------------------
+CONTROLFI OPEN_RESETL VERSION_T OPEN_MODE            PROTECTION_MODE      PROTECTION_LEVEL     REMOTE_A ACTIVATION# SWITCHOVER# DATABASE_ROLE    ARCHIVELOG_CHANGE# ARCHIVEL SWITCHOVER_STATUS          
+--------- ----------- --------- -------------------- -------------------- -------------------- -------- ----------- ----------- ---------------- ------------------ -------- --------------------       
+DATAGUAR GUARD_S SUPPLEME SUP SUP FORCE_LOGGING                           PLATFORM_ID PLATFORM_NAME                                                                                                     
+-------- ------- -------- --- --- --------------------------------------- ----------- -----------------------------------------------------------------------------------------------------             
+RECOVERY_TARGET_INCARNATION# LAST_OPEN_INCARNATION# CURRENT_SCN FLASHBACK_ON       SUP SUP DB_UNIQUE_NAME                 STANDBY_BECAME_PRIMARY_SCN FS_FAILOVER_MODE    FS_FAILOVER_STATUS             
+---------------------------- ---------------------- ----------- ------------------ --- --- ------------------------------ -------------------------- ------------------- ----------------------         
+FS_FAILOVER_CURRENT_TARGET     FS_FAILOVER_THRESHOLD FS_FAIL                                                                                                                                            
+------------------------------ --------------------- -------                                                                                                                                            
+FS_FAILOVER_OBSERVER_HOST                                                                                                                                                                               
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CON PRIMARY_DB_UNIQUE_NAME         SUP MIN_REQUIRED_CAPTURE_CHANGE# CDB     CON_ID                                                                                                                      
+--- ------------------------------ --- ---------------------------- --- ----------                                                                                                                      
+PENDING_ROLE_CHANGE_TASKS                                                                                                                                                                               
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  CON_DBID FOR SUP                                                                                                                                                                                      
+---------- --- ---                                                                                                                                                                                      
+1613977079 ORCL      17-OCT-21           1928875 17-OCT-21                       1 30-MAY-19 NOARCHIVELOG            2813740         2604660 CURRENT 17-OCT-21                 16319             2850145
+02-NOV-21 NOT ALLOWED 17-OCT-21 READ WRITE           MAXIMUM PERFORMANCE  UNPROTECTED          ENABLED   1613998839  1613998839 PRIMARY                           0 DISABLED NOT ALLOWED                
+DISABLED NONE    NO       NO  NO  NO                                               12 Microsoft Windows x86 64-bit                                                                                      
+                           2                      2     2850156 NO                 NO  NO  orcl                                                    0 DISABLED            DISABLED                       
+                                                   0                                                                                                                                                    
+                                                                                                                                                                                                        
+NO                                 NO                               YES          0                                                                                                                      
+NOT APPLICABLE                                                                                                                                                                                          
+1613977079 NO  NO                                                                                                                                                                                       
+                                                                                                                                                                                                        
+
+SQL> Aratati din dictionar numele bazei de date curenta, care sunt fisierele de control asignate si data cand au fost create.
+SP2-0734: unknown command beginning "Aratati di..." - rest of line ignored.
+SQL> select name, controlfile_date from v$database
+  2  
+SQL> select
+  2  a.name
+  3  a.controlfile_date
+  4  b.name
+  5  from v$database a
+  6  v$controlfile b
+  7  where a.name = "ORCL";
+a.controlfile_date
+ *
+ERROR at line 3:
+ORA-00923: FROM keyword not found where expected 
+
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  select
+  2  a.name
+  3  a.controlfile_created
+  4  b.name
+  5  from v$database a
+  6  v$controlfile b
+  7* where a.name = "ORCL"
+SQL> select
+  2  a.name
+  3  a.controlfile_created
+  4  b.name
+  5  from v$database a
+  6  v$controlfile b
+  7  where a.name = "ORCL"
+  8  /
+a.controlfile_created
+ *
+ERROR at line 3:
+ORA-00923: FROM keyword not found where expected 
+
+
+SQL> select controlfile_created from v$database;
+
+CONTROLFI                                                                                                                                                                                               
+---------                                                                                                                                                                                               
+17-OCT-21                                                                                                                                                                                               
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1* select controlfile_created from v$database
+SQL> select a.name, a.controlfile_created, b.name
+  2  from v$database a, v$controlfile b
+  3  where a.name = "ORCL";
+where a.name = "ORCL"
+               *
+ERROR at line 3:
+ORA-00904: "ORCL": invalid identifier 
+
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  select a.name, a.controlfile_created, b.name
+  2  from v$database a, v$controlfile b
+  3* where a.name like '%ORCL';
+SQL> 
+SQL> select a.name, a.controlfile_created, b.name
+  2  from v$database a, v$controlfile b
+  3  where a.name like '%ORCL';
+
+NAME      CONTROLFI                                                                                                                                                                                     
+--------- ---------                                                                                                                                                                                     
+NAME                                                                                                                                                                                                    
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ORCL      17-OCT-21                                                                                                                                                                                     
+D:\APLICATII\ORADATA\ORCL\CONTROL01.CTL                                                                                                                                                                 
+                                                                                                                                                                                                        
+ORCL      17-OCT-21                                                                                                                                                                                     
+D:\APLICATII\ORADATA\ORCL\CONTROL02.CTL                                                                                                                                                                 
+                                                                                                                                                                                                        
+
+SQL> Aratati din dictionar numarul maxim de fisiere temporare care se pot crea pentru baza de date curenta.
+SP2-0734: unknown command beginning "Aratati di..." - rest of line ignored.
+SQL> select type, records_total
+  2  from v$controlfile_record_section
+  3  where type='TEMPORARY FILENAME';
+
+TYPE                         RECORDS_TOTAL                                                                                                                                                              
+---------------------------- -------------                                                                                                                                                              
+TEMPORARY FILENAME                    1024                                                                                                                                                              
+
+SQL> FACETI O LISTA CU GRUPURILE FISIERELOR DE LOG, FISIERELE MEMBRU, CALEA UNDE SUNT CREATE FIZIC SI DIMENSIUNEA LOR IN MB
+SP2-0734: unknown command beginning "FACETI O L..." - rest of line ignored.
+SQL> desc v$log
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ GROUP#                                                                                                                     NUMBER
+ THREAD#                                                                                                                    NUMBER
+ SEQUENCE#                                                                                                                  NUMBER
+ BYTES                                                                                                                      NUMBER
+ BLOCKSIZE                                                                                                                  NUMBER
+ MEMBERS                                                                                                                    NUMBER
+ ARCHIVED                                                                                                                   VARCHAR2(3)
+ STATUS                                                                                                                     VARCHAR2(16)
+ FIRST_CHANGE#                                                                                                              NUMBER
+ FIRST_TIME                                                                                                                 DATE
+ NEXT_CHANGE#                                                                                                               NUMBER
+ NEXT_TIME                                                                                                                  DATE
+ CON_ID                                                                                                                     NUMBER
+
+SQL> select a.group#, a.bytes, b.member
+  2  from v$log a, v$logfile b
+  3  where a.group#=b.group#;
+
+    GROUP#      BYTES                                                                                                                                                                                   
+---------- ----------                                                                                                                                                                                   
+MEMBER                                                                                                                                                                                                  
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+         3  209715200                                                                                                                                                                                   
+D:\APLICATII\ORADATA\ORCL\REDO03.LOG                                                                                                                                                                    
+                                                                                                                                                                                                        
+         2  209715200                                                                                                                                                                                   
+D:\APLICATII\ORADATA\ORCL\REDO02.LOG                                                                                                                                                                    
+                                                                                                                                                                                                        
+         1  209715200                                                                                                                                                                                   
+D:\APLICATII\ORADATA\ORCL\REDO01.LOG                                                                                                                                                                    
+                                                                                                                                                                                                        
+
+SQL> select a.group#,b.member, (a.bytes / 256) mb
+  2  from v$log a, v$logfile b
+  3  where a.group#=b.group#;
+
+    GROUP#                                                                                                                                                                                              
+----------                                                                                                                                                                                              
+MEMBER                                                                                                                                                                                                  
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        MB                                                                                                                                                                                              
+----------                                                                                                                                                                                              
+         3                                                                                                                                                                                              
+D:\APLICATII\ORADATA\ORCL\REDO03.LOG                                                                                                                                                                    
+    819200                                                                                                                                                                                              
+                                                                                                                                                                                                        
+         2                                                                                                                                                                                              
+D:\APLICATII\ORADATA\ORCL\REDO02.LOG                                                                                                                                                                    
+    819200                                                                                                                                                                                              
+                                                                                                                                                                                                        
+         1                                                                                                                                                                                              
+D:\APLICATII\ORADATA\ORCL\REDO01.LOG                                                                                                                                                                    
+    819200                                                                                                                                                                                              
+                                                                                                                                                                                                        
+
+SQL> update login_lab_ubd set data_sf=sysdate where laborator='Lab5';
+
+1 row updated.
+
+SQL> update login_lab_ubd set durata=round((data_sf-data_in)*24*60) where laborator='Lab5';
+
+1 row updated.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select instance_number,instance_name,to_char(startup_time, 'dd-mm-yyyy hh:mi:ss'), host_name from v$instance;
+
+INSTANCE_NUMBER INSTANCE_NAME    TO_CHAR(STARTUP_TIM HOST_NAME                                                                                                                                          
+--------------- ---------------- ------------------- ----------------------------------------------------------------                                                                                   
+              1 orcl             29-10-2021 11:24:03 DESKTOP-E0N7ML4                                                                                                                                    
+
+SQL> select nume_stud, grupa, laborator, to_char(data_in, 'dd-mm-yyyy hh:mi:ss') data_inceput, to_char(data_sf, 'dd-mm-yyyy hh:mi:ss')data_sfarsit, durata minute_lucrate from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  DATA_INCEPUT        DATA_SFARSIT        MINUTE_LUCRATE                                                                                             
+------------------------------ ---------- ---------- ------------------- ------------------- --------------                                                                                             
+Pantelimon Andreea             341C5      Lab2       17-10-2021 05:40:39 17-10-2021 07:33:56            113                                                                                             
+Pantelimon Andreea             341C5      Lab4       26-10-2021 10:18:49 26-10-2021 11:31:22             73                                                                                             
+Pantelimon Andreea             341C5      Lab3       19-10-2021 10:31:03 19-10-2021 11:42:02             71                                                                                             
+Pantelimon Andreea             341C5      Lab5       02-11-2021 10:39:03 02-11-2021 11:48:38             70                                                                                             
+
+SQL> spool off;

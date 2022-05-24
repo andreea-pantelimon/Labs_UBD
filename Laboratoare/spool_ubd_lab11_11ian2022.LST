@@ -1,0 +1,120 @@
+SQL> set lines 200
+SQL> set pages 100
+SQL> select to_char(sysdate, 'dd-mm-yyyy hh:mi:ss') from dual;
+
+TO_CHAR(SYSDATE,'DD                                                                                                                                                                                     
+-------------------                                                                                                                                                                                     
+11-01-2022 10:06:48                                                                                                                                                                                     
+
+SQL> insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab11', user, sysdate, null, null);
+
+1 row created.
+
+SQL> select * from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  NUME_USER  DATA_IN   DATA_SF       DURATA                                                                                                          
+------------------------------ ---------- ---------- ---------- --------- --------- ----------                                                                                                          
+Pantelimon Andreea             341C5      Lab6       ABD1       09-NOV-21 09-NOV-21        100                                                                                                          
+Pantelimon Andreea             341C5      Lab8       ABD1       23-NOV-21 23-NOV-21         96                                                                                                          
+Pantelimon Andreea             341C5      Lab2       ABD1       17-OCT-21 17-OCT-21        113                                                                                                          
+Pantelimon Andreea             341C5      Lab4       ABD1       26-OCT-21 26-OCT-21         73                                                                                                          
+Pantelimon Andreea             341C5      Lab11      ABD1       11-JAN-22                                                                                                                               
+Pantelimon Andreea             341C5      Lab3       ABD1       19-OCT-21 19-OCT-21         71                                                                                                          
+Pantelimon Andreea             341C5      Lab5       ABD1       02-NOV-21 02-NOV-21         70                                                                                                          
+Pantelimon Andreea             341C5      Lab9       ABD1       07-DEC-21 07-DEC-21        106                                                                                                          
+Pantelimon Andreea             341C5      Lab10      ABD1       14-DEC-21 14-DEC-21         79                                                                                                          
+Pantelimon Andreea             341C5      Lab7       ABD1       16-NOV-21                                                                                                                               
+Pantelimon Andreea             341C5      Lab7_c     ABD1       16-NOV-21 16-NOV-21          4                                                                                                          
+
+11 rows selected.
+
+SQL> show parameter common_user_prefix;
+
+NAME                                 TYPE        VALUE                                                                                                                                                  
+------------------------------------ ----------- ------------------------------                                                                                                                         
+common_user_prefix                   string      C##                                                                                                                                                    
+SQL> create user test identified by test
+  2  default tablespace
+  3  
+SQL> 
+SQL> create user test identified by test
+  2  default tablespace ubda_data1
+  3  temporary tablespace ubd_temp
+  4  quota 10M on ubd_data1;
+create user test identified by test
+            *
+ERROR at line 1:
+ORA-65096: invalid common user or role name 
+
+
+SQL> conn sysdba
+ERROR:
+ORA-01017: invalid username/password; logon denied 
+
+
+Warning: You are no longer connected to ORACLE.
+SQL> show user;
+USER is ""
+SQL> conn abd1
+Connected.
+SQL> show user
+USER is "ABD1"
+SQL> connect sys/Ryuuuzaki99. as sysdba
+Connected.
+SQL> alter session set "_ORACLE_SCRIPT"=true;
+
+Session altered.
+
+SQL> conn abd1
+Connected.
+SQL> create user test identified by test
+  2  default tablespace ubd_data1
+  3  temporary tablespace ubd_temp
+  4  quota 10M on ubd_data1;
+create user test identified by test
+            *
+ERROR at line 1:
+ORA-65096: invalid common user or role name 
+
+
+SQL> update login_lab_ubd set data_sf=sysdate where laborator='Lab11';
+
+1 row updated.
+
+SQL> 
+SQL> update login_lab_ubd set durata=round((data_sf-data_in)*24*60) where laborator='Lab11';
+
+1 row updated.
+
+SQL> 
+SQL> commit;
+
+Commit complete.
+
+SQL> 
+SQL> select instance_number,instance_name,to_char(startup_time, 'dd-mm-yyyy hh:mi:ss'), host_name from v$instance;
+
+INSTANCE_NUMBER INSTANCE_NAME    TO_CHAR(STARTUP_TIM HOST_NAME                                                                                                                                          
+--------------- ---------------- ------------------- ----------------------------------------------------------------                                                                                   
+              1 orcl             29-12-2021 06:13:03 DESKTOP-E0N7ML4                                                                                                                                    
+
+SQL> 
+SQL> select nume_stud, grupa, laborator, to_char(data_in, 'dd-mm-yyyy hh:mi:ss') data_inceput, to_char(data_sf, 'dd-mm-yyyy hh:mi:ss')data_sfarsit, durata minute_lucrate from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  DATA_INCEPUT        DATA_SFARSIT        MINUTE_LUCRATE                                                                                             
+------------------------------ ---------- ---------- ------------------- ------------------- --------------                                                                                             
+Pantelimon Andreea             341C5      Lab6       09-11-2021 10:04:21 09-11-2021 11:44:43            100                                                                                             
+Pantelimon Andreea             341C5      Lab8       23-11-2021 10:08:25 23-11-2021 11:44:52             96                                                                                             
+Pantelimon Andreea             341C5      Lab2       17-10-2021 05:40:39 17-10-2021 07:33:56            113                                                                                             
+Pantelimon Andreea             341C5      Lab4       26-10-2021 10:18:49 26-10-2021 11:31:22             73                                                                                             
+Pantelimon Andreea             341C5      Lab11      11-01-2022 10:06:56 11-01-2022 10:48:24             41                                                                                             
+Pantelimon Andreea             341C5      Lab3       19-10-2021 10:31:03 19-10-2021 11:42:02             71                                                                                             
+Pantelimon Andreea             341C5      Lab5       02-11-2021 10:39:03 02-11-2021 11:48:38             70                                                                                             
+Pantelimon Andreea             341C5      Lab9       07-12-2021 10:03:18 07-12-2021 11:49:18            106                                                                                             
+Pantelimon Andreea             341C5      Lab10      14-12-2021 10:08:55 14-12-2021 11:27:32             79                                                                                             
+Pantelimon Andreea             341C5      Lab7       16-11-2021 10:09:42                                                                                                                                
+Pantelimon Andreea             341C5      Lab7_c     16-11-2021 11:55:00 16-11-2021 11:58:38              4                                                                                             
+
+11 rows selected.
+
+SQL> spool off;

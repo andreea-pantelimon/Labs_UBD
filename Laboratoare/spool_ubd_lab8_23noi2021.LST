@@ -1,0 +1,977 @@
+SQL> set lines 200
+SQL> set pages 100
+SQL> select to_char(sysdate, 'dd-mm-yyyy hh:mi:ss') from dual;
+
+TO_CHAR(SYSDATE,'DD                                                                                                                                                                                     
+-------------------                                                                                                                                                                                     
+23-11-2021 10:08:24                                                                                                                                                                                     
+
+SQL> 
+SQL> insert into login_lab_ubd values ('Pantelimon Andreea', '341C5', 'Lab8', user, sysdate, null, null);
+
+1 row created.
+
+SQL> 
+SQL> select * from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  NUME_USER  DATA_IN   DATA_SF       DURATA                                                                                                          
+------------------------------ ---------- ---------- ---------- --------- --------- ----------                                                                                                          
+Pantelimon Andreea             341C5      Lab6       ABD1       09-NOV-21 09-NOV-21        100                                                                                                          
+Pantelimon Andreea             341C5      Lab8       ABD1       23-NOV-21                                                                                                                               
+Pantelimon Andreea             341C5      Lab2       ABD1       17-OCT-21 17-OCT-21        113                                                                                                          
+Pantelimon Andreea             341C5      Lab4       ABD1       26-OCT-21 26-OCT-21         73                                                                                                          
+Pantelimon Andreea             341C5      Lab3       ABD1       19-OCT-21 19-OCT-21         71                                                                                                          
+Pantelimon Andreea             341C5      Lab5       ABD1       02-NOV-21 02-NOV-21         70                                                                                                          
+Pantelimon Andreea             341C5      Lab7       ABD1       16-NOV-21                                                                                                                               
+Pantelimon Andreea             341C5      Lab7_c     ABD1       16-NOV-21 16-NOV-21          4                                                                                                          
+
+8 rows selected.
+
+SQL> create undo tablespace BD_UNDO datafile 'd:\undo_db01.dbf' size 2M;
+
+Tablespace created.
+
+SQL> create rollback segment UBD_UNDO tablespace BD_UNDO
+  2   storage (initial 100k next 100k optimal 4M minextents 20 maxextents 100);
+
+Rollback segment created.
+
+SQL> desc dba_rollback_segs
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ SEGMENT_NAME                                                                                                      NOT NULL VARCHAR2(30)
+ OWNER                                                                                                                      VARCHAR2(6)
+ TABLESPACE_NAME                                                                                                   NOT NULL VARCHAR2(30)
+ SEGMENT_ID                                                                                                        NOT NULL NUMBER
+ FILE_ID                                                                                                           NOT NULL NUMBER
+ BLOCK_ID                                                                                                          NOT NULL NUMBER
+ INITIAL_EXTENT                                                                                                             NUMBER
+ NEXT_EXTENT                                                                                                                NUMBER
+ MIN_EXTENTS                                                                                                       NOT NULL NUMBER
+ MAX_EXTENTS                                                                                                       NOT NULL NUMBER
+ PCT_INCREASE                                                                                                               NUMBER
+ STATUS                                                                                                                     VARCHAR2(16)
+ INSTANCE_NUM                                                                                                               VARCHAR2(40)
+ RELATIVE_FNO                                                                                                      NOT NULL NUMBER
+
+SQL> select segment_name,tablespace_name,owner,status from dba_rollback_segs;
+
+SEGMENT_NAME                   TABLESPACE_NAME                OWNER  STATUS                                                                                                                             
+------------------------------ ------------------------------ ------ ----------------                                                                                                                   
+SYSTEM                         SYSTEM                         SYS    ONLINE                                                                                                                             
+_SYSSMU1_3741171459$           UNDOTBS1                       PUBLIC ONLINE                                                                                                                             
+_SYSSMU2_1557575246$           UNDOTBS1                       PUBLIC ONLINE                                                                                                                             
+_SYSSMU3_3193270435$           UNDOTBS1                       PUBLIC ONLINE                                                                                                                             
+_SYSSMU4_2372004640$           UNDOTBS1                       PUBLIC ONLINE                                                                                                                             
+_SYSSMU5_553218552$            UNDOTBS1                       PUBLIC ONLINE                                                                                                                             
+_SYSSMU6_3809612316$           UNDOTBS1                       PUBLIC ONLINE                                                                                                                             
+_SYSSMU7_3306078869$           UNDOTBS1                       PUBLIC ONLINE                                                                                                                             
+_SYSSMU8_115127830$            UNDOTBS1                       PUBLIC ONLINE                                                                                                                             
+_SYSSMU9_4165470211$           UNDOTBS1                       PUBLIC ONLINE                                                                                                                             
+_SYSSMU10_3563521556$          UNDOTBS1                       PUBLIC ONLINE                                                                                                                             
+_SYSSMU11_3889143996$          BD_UNDO                        PUBLIC OFFLINE                                                                                                                            
+_SYSSMU12_2335495043$          BD_UNDO                        PUBLIC OFFLINE                                                                                                                            
+_SYSSMU13_1468535969$          BD_UNDO                        PUBLIC OFFLINE                                                                                                                            
+_SYSSMU14_198960898$           BD_UNDO                        PUBLIC OFFLINE                                                                                                                            
+_SYSSMU15_288639701$           BD_UNDO                        PUBLIC OFFLINE                                                                                                                            
+_SYSSMU16_2029819949$          BD_UNDO                        PUBLIC OFFLINE                                                                                                                            
+_SYSSMU17_1499858708$          BD_UNDO                        PUBLIC OFFLINE                                                                                                                            
+_SYSSMU18_3967861792$          BD_UNDO                        PUBLIC OFFLINE                                                                                                                            
+
+19 rows selected.
+
+SQL> desc v$rollname
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ USN                                                                                                                        NUMBER
+ NAME                                                                                                              NOT NULL VARCHAR2(30)
+ CON_ID                                                                                                                     NUMBER
+
+SQL>  select * from v$rollname;
+
+       USN NAME                               CON_ID                                                                                                                                                    
+---------- ------------------------------ ----------                                                                                                                                                    
+         0 SYSTEM                                  1                                                                                                                                                    
+         1 _SYSSMU1_3741171459$                    1                                                                                                                                                    
+         2 _SYSSMU2_1557575246$                    1                                                                                                                                                    
+         3 _SYSSMU3_3193270435$                    1                                                                                                                                                    
+         4 _SYSSMU4_2372004640$                    1                                                                                                                                                    
+         5 _SYSSMU5_553218552$                     1                                                                                                                                                    
+         6 _SYSSMU6_3809612316$                    1                                                                                                                                                    
+         7 _SYSSMU7_3306078869$                    1                                                                                                                                                    
+         8 _SYSSMU8_115127830$                     1                                                                                                                                                    
+         9 _SYSSMU9_4165470211$                    1                                                                                                                                                    
+        10 _SYSSMU10_3563521556$                   1                                                                                                                                                    
+
+11 rows selected.
+
+SQL> desc v$rollstat
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ USN                                                                                                                        NUMBER
+ LATCH                                                                                                                      NUMBER
+ EXTENTS                                                                                                                    NUMBER
+ RSSIZE                                                                                                                     NUMBER
+ WRITES                                                                                                                     NUMBER
+ XACTS                                                                                                                      NUMBER
+ GETS                                                                                                                       NUMBER
+ WAITS                                                                                                                      NUMBER
+ OPTSIZE                                                                                                                    NUMBER
+ HWMSIZE                                                                                                                    NUMBER
+ SHRINKS                                                                                                                    NUMBER
+ WRAPS                                                                                                                      NUMBER
+ EXTENDS                                                                                                                    NUMBER
+ AVESHRINK                                                                                                                  NUMBER
+ AVEACTIVE                                                                                                                  NUMBER
+ STATUS                                                                                                                     VARCHAR2(15)
+ CUREXT                                                                                                                     NUMBER
+ CURBLK                                                                                                                     NUMBER
+ CON_ID                                                                                                                     NUMBER
+
+SQL>  select usn, rssize, extents, status from v$rollstat;
+
+       USN     RSSIZE    EXTENTS STATUS                                                                                                                                                                 
+---------- ---------- ---------- ---------------                                                                                                                                                        
+         0     450560          7 ONLINE                                                                                                                                                                 
+         1    1171456          3 ONLINE                                                                                                                                                                 
+         2    1171456          3 ONLINE                                                                                                                                                                 
+         3    1171456          3 ONLINE                                                                                                                                                                 
+         4    1171456          3 ONLINE                                                                                                                                                                 
+         5    1171456          3 ONLINE                                                                                                                                                                 
+         6    1171456          3 ONLINE                                                                                                                                                                 
+         7    1171456          3 ONLINE                                                                                                                                                                 
+         8    1171456          3 ONLINE                                                                                                                                                                 
+         9    2220032          4 ONLINE                                                                                                                                                                 
+        10    3268608          5 ONLINE                                                                                                                                                                 
+
+11 rows selected.
+
+SQL> desc v$session
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ SADDR                                                                                                                      RAW(8)
+ SID                                                                                                                        NUMBER
+ SERIAL#                                                                                                                    NUMBER
+ AUDSID                                                                                                                     NUMBER
+ PADDR                                                                                                                      RAW(8)
+ USER#                                                                                                                      NUMBER
+ USERNAME                                                                                                                   VARCHAR2(128)
+ COMMAND                                                                                                                    NUMBER
+ OWNERID                                                                                                                    NUMBER
+ TADDR                                                                                                                      VARCHAR2(16)
+ LOCKWAIT                                                                                                                   VARCHAR2(16)
+ STATUS                                                                                                                     VARCHAR2(8)
+ SERVER                                                                                                                     VARCHAR2(9)
+ SCHEMA#                                                                                                                    NUMBER
+ SCHEMANAME                                                                                                                 VARCHAR2(128)
+ OSUSER                                                                                                                     VARCHAR2(128)
+ PROCESS                                                                                                                    VARCHAR2(24)
+ MACHINE                                                                                                                    VARCHAR2(64)
+ PORT                                                                                                                       NUMBER
+ TERMINAL                                                                                                                   VARCHAR2(16)
+ PROGRAM                                                                                                                    VARCHAR2(64)
+ TYPE                                                                                                                       VARCHAR2(10)
+ SQL_ADDRESS                                                                                                                RAW(8)
+ SQL_HASH_VALUE                                                                                                             NUMBER
+ SQL_ID                                                                                                                     VARCHAR2(13)
+ SQL_CHILD_NUMBER                                                                                                           NUMBER
+ SQL_EXEC_START                                                                                                             DATE
+ SQL_EXEC_ID                                                                                                                NUMBER
+ PREV_SQL_ADDR                                                                                                              RAW(8)
+ PREV_HASH_VALUE                                                                                                            NUMBER
+ PREV_SQL_ID                                                                                                                VARCHAR2(13)
+ PREV_CHILD_NUMBER                                                                                                          NUMBER
+ PREV_EXEC_START                                                                                                            DATE
+ PREV_EXEC_ID                                                                                                               NUMBER
+ PLSQL_ENTRY_OBJECT_ID                                                                                                      NUMBER
+ PLSQL_ENTRY_SUBPROGRAM_ID                                                                                                  NUMBER
+ PLSQL_OBJECT_ID                                                                                                            NUMBER
+ PLSQL_SUBPROGRAM_ID                                                                                                        NUMBER
+ MODULE                                                                                                                     VARCHAR2(64)
+ MODULE_HASH                                                                                                                NUMBER
+ ACTION                                                                                                                     VARCHAR2(64)
+ ACTION_HASH                                                                                                                NUMBER
+ CLIENT_INFO                                                                                                                VARCHAR2(64)
+ FIXED_TABLE_SEQUENCE                                                                                                       NUMBER
+ ROW_WAIT_OBJ#                                                                                                              NUMBER
+ ROW_WAIT_FILE#                                                                                                             NUMBER
+ ROW_WAIT_BLOCK#                                                                                                            NUMBER
+ ROW_WAIT_ROW#                                                                                                              NUMBER
+ TOP_LEVEL_CALL#                                                                                                            NUMBER
+ LOGON_TIME                                                                                                                 DATE
+ LAST_CALL_ET                                                                                                               NUMBER
+ PDML_ENABLED                                                                                                               VARCHAR2(3)
+ FAILOVER_TYPE                                                                                                              VARCHAR2(13)
+ FAILOVER_METHOD                                                                                                            VARCHAR2(10)
+ FAILED_OVER                                                                                                                VARCHAR2(3)
+ RESOURCE_CONSUMER_GROUP                                                                                                    VARCHAR2(32)
+ PDML_STATUS                                                                                                                VARCHAR2(8)
+ PDDL_STATUS                                                                                                                VARCHAR2(8)
+ PQ_STATUS                                                                                                                  VARCHAR2(8)
+ CURRENT_QUEUE_DURATION                                                                                                     NUMBER
+ CLIENT_IDENTIFIER                                                                                                          VARCHAR2(64)
+ BLOCKING_SESSION_STATUS                                                                                                    VARCHAR2(11)
+ BLOCKING_INSTANCE                                                                                                          NUMBER
+ BLOCKING_SESSION                                                                                                           NUMBER
+ FINAL_BLOCKING_SESSION_STATUS                                                                                              VARCHAR2(11)
+ FINAL_BLOCKING_INSTANCE                                                                                                    NUMBER
+ FINAL_BLOCKING_SESSION                                                                                                     NUMBER
+ SEQ#                                                                                                                       NUMBER
+ EVENT#                                                                                                                     NUMBER
+ EVENT                                                                                                                      VARCHAR2(64)
+ P1TEXT                                                                                                                     VARCHAR2(64)
+ P1                                                                                                                         NUMBER
+ P1RAW                                                                                                                      RAW(8)
+ P2TEXT                                                                                                                     VARCHAR2(64)
+ P2                                                                                                                         NUMBER
+ P2RAW                                                                                                                      RAW(8)
+ P3TEXT                                                                                                                     VARCHAR2(64)
+ P3                                                                                                                         NUMBER
+ P3RAW                                                                                                                      RAW(8)
+ WAIT_CLASS_ID                                                                                                              NUMBER
+ WAIT_CLASS#                                                                                                                NUMBER
+ WAIT_CLASS                                                                                                                 VARCHAR2(64)
+ WAIT_TIME                                                                                                                  NUMBER
+ SECONDS_IN_WAIT                                                                                                            NUMBER
+ STATE                                                                                                                      VARCHAR2(19)
+ WAIT_TIME_MICRO                                                                                                            NUMBER
+ TIME_REMAINING_MICRO                                                                                                       NUMBER
+ TIME_SINCE_LAST_WAIT_MICRO                                                                                                 NUMBER
+ SERVICE_NAME                                                                                                               VARCHAR2(64)
+ SQL_TRACE                                                                                                                  VARCHAR2(8)
+ SQL_TRACE_WAITS                                                                                                            VARCHAR2(5)
+ SQL_TRACE_BINDS                                                                                                            VARCHAR2(5)
+ SQL_TRACE_PLAN_STATS                                                                                                       VARCHAR2(10)
+ SESSION_EDITION_ID                                                                                                         NUMBER
+ CREATOR_ADDR                                                                                                               RAW(8)
+ CREATOR_SERIAL#                                                                                                            NUMBER
+ ECID                                                                                                                       VARCHAR2(64)
+ SQL_TRANSLATION_PROFILE_ID                                                                                                 NUMBER
+ PGA_TUNABLE_MEM                                                                                                            NUMBER
+ SHARD_DDL_STATUS                                                                                                           VARCHAR2(8)
+ CON_ID                                                                                                                     NUMBER
+ EXTERNAL_NAME                                                                                                              VARCHAR2(1024)
+ PLSQL_DEBUGGER_CONNECTED                                                                                                   VARCHAR2(5)
+
+SQL>  select username, sid, saddr, service_name from v$session;
+
+USERNAME                                                                                                                                SID SADDR                                                       
+-------------------------------------------------------------------------------------------------------------------------------- ---------- ----------------                                            
+SERVICE_NAME                                                                                                                                                                                            
+----------------------------------------------------------------                                                                                                                                        
+                                                                                                                                          1 00007FF7E6AD9638                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                          2 00007FF7E6ADBE20                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                          4 00007FF7E6AE0DF0                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                         10 00007FF7E6AEFD60                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        123 00007FF7E6C09E98                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        124 00007FF7E6C0C680                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        133 00007FF7E6C22DA8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        245 00007FF7E6D3A6F8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        246 00007FF7E6D3CEE0                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        247 00007FF7E6D3F6C8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        248 00007FF7E6D41EB0                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        367 00007FF7E50CD028                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        368 00007FF7E50CF810                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        369 00007FF7E50D1FF8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        371 00007FF7E50D6FC8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        373 00007FF7E50DBF98                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        374 00007FF7E50DE780                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        489 00007FF7E51FD888                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        490 00007FF7E5200070                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        491 00007FF7E5202858                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        493 00007FF7E5207828                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        494 00007FF7E520A010                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        611 00007FF7E532E0E8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        612 00007FF7E53308D0                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        613 00007FF7E53330B8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        619 00007FF7E5342028                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        733 00007FF7E545E948                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        734 00007FF7E5461130                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        735 00007FF7E5463918                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        855 00007FF7E558F1A8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        856 00007FF7E5591990                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        857 00007FF7E5594178                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+
+USERNAME                                                                                                                                SID SADDR                                                       
+-------------------------------------------------------------------------------------------------------------------------------- ---------- ----------------                                            
+SERVICE_NAME                                                                                                                                                                                            
+----------------------------------------------------------------                                                                                                                                        
+                                                                                                                                                                                                        
+                                                                                                                                        860 00007FF7E559B930                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        977 00007FF7E56BFA08                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        978 00007FF7E56C21F0                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        979 00007FF7E56C49D8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        981 00007FF7E56C99A8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                        985 00007FF7E56D3948                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1099 00007FF7E57F0268                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1100 00007FF7E57F2A50                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1101 00007FF7E57F5238                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1103 00007FF7E57FA208                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1106 00007FF7E58019C0                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1110 00007FF7E580B960                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1221 00007FF7E5920AC8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1222 00007FF7E59232B0                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1223 00007FF7E5925A98                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1225 00007FF7E592AA68                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+ABD1                                                                                                                                   1226 00007FF7E592D250                                            
+SYS$USERS                                                                                                                                                                                               
+                                                                                                                                                                                                        
+                                                                                                                                       1343 00007FF7E5A51328                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1344 00007FF7E5A53B10                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1345 00007FF7E5A562F8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1347 00007FF7E5A5B2C8                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+                                                                                                                                       1350 00007FF7E5A62A80                                            
+SYS$BACKGROUND                                                                                                                                                                                          
+                                                                                                                                                                                                        
+
+54 rows selected.
+
+SQL>  desc v$transaction
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ ADDR                                                                                                                       RAW(8)
+ XIDUSN                                                                                                                     NUMBER
+ XIDSLOT                                                                                                                    NUMBER
+ XIDSQN                                                                                                                     NUMBER
+ UBAFIL                                                                                                                     NUMBER
+ UBABLK                                                                                                                     NUMBER
+ UBASQN                                                                                                                     NUMBER
+ UBAREC                                                                                                                     NUMBER
+ STATUS                                                                                                                     VARCHAR2(16)
+ START_TIME                                                                                                                 VARCHAR2(20)
+ START_SCNB                                                                                                                 NUMBER
+ START_SCNW                                                                                                                 NUMBER
+ START_UEXT                                                                                                                 NUMBER
+ START_UBAFIL                                                                                                               NUMBER
+ START_UBABLK                                                                                                               NUMBER
+ START_UBASQN                                                                                                               NUMBER
+ START_UBAREC                                                                                                               NUMBER
+ SES_ADDR                                                                                                                   RAW(8)
+ FLAG                                                                                                                       NUMBER
+ SPACE                                                                                                                      VARCHAR2(3)
+ RECURSIVE                                                                                                                  VARCHAR2(3)
+ NOUNDO                                                                                                                     VARCHAR2(3)
+ PTX                                                                                                                        VARCHAR2(3)
+ NAME                                                                                                                       VARCHAR2(256)
+ PRV_XIDUSN                                                                                                                 NUMBER
+ PRV_XIDSLT                                                                                                                 NUMBER
+ PRV_XIDSQN                                                                                                                 NUMBER
+ PTX_XIDUSN                                                                                                                 NUMBER
+ PTX_XIDSLT                                                                                                                 NUMBER
+ PTX_XIDSQN                                                                                                                 NUMBER
+ DSCN-B                                                                                                                     NUMBER
+ DSCN-W                                                                                                                     NUMBER
+ USED_UBLK                                                                                                                  NUMBER
+ USED_UREC                                                                                                                  NUMBER
+ LOG_IO                                                                                                                     NUMBER
+ PHY_IO                                                                                                                     NUMBER
+ CR_GET                                                                                                                     NUMBER
+ CR_CHANGE                                                                                                                  NUMBER
+ START_DATE                                                                                                                 DATE
+ DSCN_BASE                                                                                                                  NUMBER
+ DSCN_WRAP                                                                                                                  NUMBER
+ START_SCN                                                                                                                  NUMBER
+ DEPENDENT_SCN                                                                                                              NUMBER
+ XID                                                                                                                        RAW(8)
+ PRV_XID                                                                                                                    RAW(8)
+ PTX_XID                                                                                                                    RAW(8)
+ CON_ID                                                                                                                     NUMBER
+
+SQL> nsert into emp values (999, 'TEST','TRANZACT',1111,sysdate, 100,0,10)
+SP2-0734: unknown command beginning "nsert into..." - rest of line ignored.
+SQL> insert into emp values (999, 'TEST','TRANZACT',1111,sysdate, 100,0,10)
+  2  ;
+
+1 row created.
+
+SQL> select addr, xidusn, used_ublk,start_uext, start_ubafil from v$transaction
+  2  ;
+
+ADDR                 XIDUSN  USED_UBLK START_UEXT START_UBAFIL                                                                                                                                          
+---------------- ---------- ---------- ---------- ------------                                                                                                                                          
+00007FF7DB159118          7          1          2            4                                                                                                                                          
+
+SQL>  SELECT s.username, t.xidusn, t.ubafil, t.ubablk, t.used_ublk FROM v$session s,
+  2  v$transaction t WHERE s.saddr = t.ses_addr;
+
+USERNAME                                                                                                                             XIDUSN     UBAFIL     UBABLK  USED_UBLK                            
+-------------------------------------------------------------------------------------------------------------------------------- ---------- ---------- ---------- ----------                            
+ABD1                                                                                                                                      7          4       3481          1                            
+
+SQL> desc v$undostat
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ BEGIN_TIME                                                                                                                 DATE
+ END_TIME                                                                                                                   DATE
+ UNDOTSN                                                                                                                    NUMBER
+ UNDOBLKS                                                                                                                   NUMBER
+ TXNCOUNT                                                                                                                   NUMBER
+ MAXQUERYLEN                                                                                                                NUMBER
+ MAXQUERYID                                                                                                                 VARCHAR2(13)
+ MAXCONCURRENCY                                                                                                             NUMBER
+ UNXPSTEALCNT                                                                                                               NUMBER
+ UNXPBLKRELCNT                                                                                                              NUMBER
+ UNXPBLKREUCNT                                                                                                              NUMBER
+ EXPSTEALCNT                                                                                                                NUMBER
+ EXPBLKRELCNT                                                                                                               NUMBER
+ EXPBLKREUCNT                                                                                                               NUMBER
+ SSOLDERRCNT                                                                                                                NUMBER
+ NOSPACEERRCNT                                                                                                              NUMBER
+ ACTIVEBLKS                                                                                                                 NUMBER
+ UNEXPIREDBLKS                                                                                                              NUMBER
+ EXPIREDBLKS                                                                                                                NUMBER
+ TUNED_UNDORETENTION                                                                                                        NUMBER
+ CON_ID                                                                                                                     NUMBER
+
+SQL>  SELECT to_char(begin_time, fdd-mm-yyyy hh:mi:ssf) start_time, to_char(end_time,fddmm-yyyy hh:mi:ssf) end_time, ((end_time-begin_time)* 24)*60 minute, undoblks FROM v$undostat;
+SP2-0552: Bind variable "MI" not declared.
+SQL>  desc v$undostat
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ BEGIN_TIME                                                                                                                 DATE
+ END_TIME                                                                                                                   DATE
+ UNDOTSN                                                                                                                    NUMBER
+ UNDOBLKS                                                                                                                   NUMBER
+ TXNCOUNT                                                                                                                   NUMBER
+ MAXQUERYLEN                                                                                                                NUMBER
+ MAXQUERYID                                                                                                                 VARCHAR2(13)
+ MAXCONCURRENCY                                                                                                             NUMBER
+ UNXPSTEALCNT                                                                                                               NUMBER
+ UNXPBLKRELCNT                                                                                                              NUMBER
+ UNXPBLKREUCNT                                                                                                              NUMBER
+ EXPSTEALCNT                                                                                                                NUMBER
+ EXPBLKRELCNT                                                                                                               NUMBER
+ EXPBLKREUCNT                                                                                                               NUMBER
+ SSOLDERRCNT                                                                                                                NUMBER
+ NOSPACEERRCNT                                                                                                              NUMBER
+ ACTIVEBLKS                                                                                                                 NUMBER
+ UNEXPIREDBLKS                                                                                                              NUMBER
+ EXPIREDBLKS                                                                                                                NUMBER
+ TUNED_UNDORETENTION                                                                                                        NUMBER
+ CON_ID                                                                                                                     NUMBER
+
+SQL> SELECT to_char(begin_time, fdd-mm-yyyy hh:mi:ssf) start_time, to_char(end_time,fdd-mm-yyyy hh:mi:ssf) end_time, ((end_time-begin_time)* 24)*60 minute, undoblks FROM v$undostat;
+SP2-0552: Bind variable "MI" not declared.
+SQL> SELECT (SUM(undoblks) / SUM ((end_time - begin_time) * 24*60*60))
+  2  nr_med_blocuri_undo_sec FROM v$undostat;
+
+NR_MED_BLOCURI_UNDO_SEC                                                                                                                                                                                 
+-----------------------                                                                                                                                                                                 
+             .094763687                                                                                                                                                                                 
+
+SQL>  alter rollback segment ubd shrink to 4M;
+
+Rollback segment altered.
+
+SQL> drop rollback segment ubd;
+
+Rollback segment dropped.
+
+SQL> desc v$sort_segment
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ TABLESPACE_NAME                                                                                                            VARCHAR2(30)
+ SEGMENT_FILE                                                                                                               NUMBER
+ SEGMENT_BLOCK                                                                                                              NUMBER
+ EXTENT_SIZE                                                                                                                NUMBER
+ CURRENT_USERS                                                                                                              NUMBER
+ TOTAL_EXTENTS                                                                                                              NUMBER
+ TOTAL_BLOCKS                                                                                                               NUMBER
+ USED_EXTENTS                                                                                                               NUMBER
+ USED_BLOCKS                                                                                                                NUMBER
+ FREE_EXTENTS                                                                                                               NUMBER
+ FREE_BLOCKS                                                                                                                NUMBER
+ ADDED_EXTENTS                                                                                                              NUMBER
+ EXTENT_HITS                                                                                                                NUMBER
+ FREED_EXTENTS                                                                                                              NUMBER
+ FREE_REQUESTS                                                                                                              NUMBER
+ MAX_SIZE                                                                                                                   NUMBER
+ MAX_BLOCKS                                                                                                                 NUMBER
+ MAX_USED_SIZE                                                                                                              NUMBER
+ MAX_USED_BLOCKS                                                                                                            NUMBER
+ MAX_SORT_SIZE                                                                                                              NUMBER
+ MAX_SORT_BLOCKS                                                                                                            NUMBER
+ RELATIVE_FNO                                                                                                               NUMBER
+ TS#                                                                                                                        NUMBER
+ CON_ID                                                                                                                     NUMBER
+ IS_LOCAL_TEMP                                                                                                              NUMBER
+
+SQL> select tablespace_name,max_sort_size,extent_size,max_sort_blocks from v$sort_segment;
+
+TABLESPACE_NAME                MAX_SORT_SIZE EXTENT_SIZE MAX_SORT_BLOCKS                                                                                                                                
+------------------------------ ------------- ----------- ---------------                                                                                                                                
+TEMP                                       1         128             128                                                                                                                                
+
+SQL> desc v$tempseg_usage ( v$sort_usage)
+Usage: DESCRIBE [schema.]object[@db_link]
+SQL> desc v$tempseg_usage (v$sort_usage)
+Usage: DESCRIBE [schema.]object[@db_link]
+SQL> desc v$tempseg_usage(v$sort_usage)
+SP2-0565: Illegal identifier.
+SQL>  select username,user,tablespace,contents,extents,blocks from v$tempseg_usage;
+
+USERNAME                                                                                                                                                                                                
+--------------------------------------------------------------------------------------------------------------------------------                                                                        
+USER                                                                                                                             TABLESPACE                     CONTENTS     EXTENTS     BLOCKS         
+-------------------------------------------------------------------------------------------------------------------------------- ------------------------------ --------- ---------- ----------         
+                                                                                                                                                                                                        
+ABD1                                                                                                                             TEMP                           TEMPORARY          1        128         
+                                                                                                                                                                                                        
+                                                                                                                                                                                                        
+ABD1                                                                                                                             TEMP                           TEMPORARY          1        128         
+                                                                                                                                                                                                        
+                                                                                                                                                                                                        
+ABD1                                                                                                                             TEMP                           TEMPORARY          1        128         
+                                                                                                                                                                                                        
+
+SQL> alter system set sort_area_size=10240 deferred
+  2  ;
+
+System altered.
+
+SQL> EXERCITIUL 1
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> SA SE FACA O LISTA CU NUMELE, MARIMEA IN BYTES, NUMERUL DE EXTENSII SI STAREA SEGEMNTELOR ONLINE DIN SESIUNEA CURENTA
+SP2-0734: unknown command beginning "SA SE FACA..." - rest of line ignored.
+SQL> select a.segment_name, b.extents,b.rssize ,a.status
+  2  from dba_rollback_segs a,
+  3  v$rollstat b
+  4  where b.usn = a.segment_id and
+  5  a.status = 'ONLINE';
+
+SEGMENT_NAME                      EXTENTS     RSSIZE STATUS                                                                                                                                             
+------------------------------ ---------- ---------- ----------------                                                                                                                                   
+SYSTEM                                  7     450560 ONLINE                                                                                                                                             
+_SYSSMU1_3741171459$                    3    1171456 ONLINE                                                                                                                                             
+_SYSSMU2_1557575246$                    3    1171456 ONLINE                                                                                                                                             
+_SYSSMU3_3193270435$                    3    1171456 ONLINE                                                                                                                                             
+_SYSSMU4_2372004640$                    3    1171456 ONLINE                                                                                                                                             
+_SYSSMU5_553218552$                     3    1171456 ONLINE                                                                                                                                             
+_SYSSMU6_3809612316$                    4    2220032 ONLINE                                                                                                                                             
+_SYSSMU7_3306078869$                    3    1171456 ONLINE                                                                                                                                             
+_SYSSMU8_115127830$                     3    1171456 ONLINE                                                                                                                                             
+_SYSSMU9_4165470211$                    4    2220032 ONLINE                                                                                                                                             
+_SYSSMU10_3563521556$                   5    3268608 ONLINE                                                                                                                                             
+
+11 rows selected.
+
+SQL> EXERCITIUL 2
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> EXERCITIUL 2
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> SA SE CREEZE UN TABLESPACE DE UNDO UNDO_LAB. SA SE FACA APOI O LISTA CU NUMELE SEGMENTELOR DE ROLLBACK, NUMELE TABLESPACE-LUI DE UNDO CREAT, FISIERELE IN CARE SUNT CREATE SEGMENTELE SI STAREA LOR
+SP2-0734: unknown command beginning "SA SE CREE..." - rest of line ignored.
+SQL> create undo tablespace UNDO_LAB datafile 'd:
+  2  \undo_lab.dbf' size 2M;
+create undo tablespace UNDO_LAB datafile 'd:
+*
+ERROR at line 1:
+ORA-01119: error in creating database file 'd: 
+\undo_lab.dbf' 
+ORA-27040: file create error, unable to create file 
+OSD-04002: unable to open file 
+O/S-Error: (OS 123) The filename, directory name, or volume label syntax is incorrect. 
+
+
+SQL> create undo tablespace UNDO_LAB datafile 'd:\undo_lab.dbf' size 2M;
+
+Tablespace created.
+
+SQL> EXERCITIUL 3
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> SA SE FACA O LISTA CU USERUL CURENT, ADRESA SESIUNII CURENTE, SERVICIUL DE BACKGROUND UTILIZAT SI STAREA SESIUNII CURENTE
+SP2-0734: unknown command beginning "SA SE FACA..." - rest of line ignored.
+SQL> select username, saddr, service_name, status
+  2  from v$session;
+
+USERNAME                                                                                                                         SADDR                                                                  
+-------------------------------------------------------------------------------------------------------------------------------- ----------------                                                       
+SERVICE_NAME                                                     STATUS                                                                                                                                 
+---------------------------------------------------------------- --------                                                                                                                               
+                                                                                                                                 00007FF7E6AD9638                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E6ADBE20                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E6AE0DF0                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E6AEFD60                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E6C09E98                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E6C0C680                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E6C22DA8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E6D3A6F8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E6D3CEE0                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E6D3F6C8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E6D41EB0                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E50CD028                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E50CF810                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E50D1FF8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E50D6FC8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E50DBF98                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E50DE780                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E51FD888                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5200070                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5202858                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5207828                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E520A010                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E532E0E8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E53308D0                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E53330B8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5342028                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E545E948                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5461130                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5463918                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E558F1A8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5591990                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5594178                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+
+USERNAME                                                                                                                         SADDR                                                                  
+-------------------------------------------------------------------------------------------------------------------------------- ----------------                                                       
+SERVICE_NAME                                                     STATUS                                                                                                                                 
+---------------------------------------------------------------- --------                                                                                                                               
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E559B930                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E56BFA08                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E56C21F0                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E56C49D8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E56C99A8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E56D3948                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E57F0268                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E57F2A50                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E57F5238                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E57FA208                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E58019C0                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E580B960                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5920AC8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E59232B0                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5925A98                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E592AA68                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+ABD1                                                                                                                             00007FF7E592D250                                                       
+SYS$USERS                                                        ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5A51328                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5A53B10                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5A562F8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5A5B2C8                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+                                                                                                                                 00007FF7E5A62A80                                                       
+SYS$BACKGROUND                                                   ACTIVE                                                                                                                                 
+                                                                                                                                                                                                        
+
+54 rows selected.
+
+SQL> EXERCITIUL 2
+SP2-0734: unknown command beginning "EXERCITIUL..." - rest of line ignored.
+SQL> select a.segment_name, a.tablespace_name, a.status, b.file_name
+  2  from dba_rollback_segs a,
+  3  dba_data_files b
+  4  where a.tablespace_name=btablespace_name and
+  5  a.tabelspace_name='UNDO_LAB';
+a.tabelspace_name='UNDO_LAB'
+*
+ERROR at line 5:
+ORA-00904: "A"."TABELSPACE_NAME": invalid identifier 
+
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  select a.segment_name, a.tablespace_name, a.status, b.file_name
+  2  from dba_rollback_segs a,
+  3  dba_data_files b
+  4  where a.tablespace_name=btablespace_name and
+  5* a.tablespace_name='UNDO_LAB'
+SQL> select a.segment_name, a.tablespace_name, a.status, b.file_name
+  2  from dba_rollback_segs a,
+  3  dba_data_files b
+  4  where a.tablespace_name=btablespace_name and
+  5  a.tablespace_name='UNDO_LAB';
+where a.tablespace_name=btablespace_name and
+                        *
+ERROR at line 4:
+ORA-00904: "BTABLESPACE_NAME": invalid identifier 
+
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  select a.segment_name, a.tablespace_name, a.status, b.file_name
+  2  from dba_rollback_segs a,
+  3  dba_data_files b
+  4  where a.tablespace_name=b.tablespace_name and
+  5* a.tablespace_name='UNDO_LAB'
+SQL> select a.segment_name, a.tablespace_name, a.status, b.file_name
+  2  from dba_rollback_segs a,
+  3  dba_data_files b
+  4  where a.tablespace_name=b.tablespace_name and
+  5  a.tablespace_name='UNDO_LAB';
+
+SEGMENT_NAME                   TABLESPACE_NAME                STATUS                                                                                                                                    
+------------------------------ ------------------------------ ----------------                                                                                                                          
+FILE_NAME                                                                                                                                                                                               
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+_SYSSMU19_3808513806$          UNDO_LAB                       OFFLINE                                                                                                                                   
+D:\UNDO_LAB.DBF                                                                                                                                                                                         
+                                                                                                                                                                                                        
+_SYSSMU20_3477774150$          UNDO_LAB                       OFFLINE                                                                                                                                   
+D:\UNDO_LAB.DBF                                                                                                                                                                                         
+                                                                                                                                                                                                        
+_SYSSMU21_2012996736$          UNDO_LAB                       OFFLINE                                                                                                                                   
+D:\UNDO_LAB.DBF                                                                                                                                                                                         
+                                                                                                                                                                                                        
+_SYSSMU22_1056193492$          UNDO_LAB                       OFFLINE                                                                                                                                   
+D:\UNDO_LAB.DBF                                                                                                                                                                                         
+                                                                                                                                                                                                        
+_SYSSMU23_2807147703$          UNDO_LAB                       OFFLINE                                                                                                                                   
+D:\UNDO_LAB.DBF                                                                                                                                                                                         
+                                                                                                                                                                                                        
+_SYSSMU24_3332372299$          UNDO_LAB                       OFFLINE                                                                                                                                   
+D:\UNDO_LAB.DBF                                                                                                                                                                                         
+                                                                                                                                                                                                        
+_SYSSMU25_1477342621$          UNDO_LAB                       OFFLINE                                                                                                                                   
+D:\UNDO_LAB.DBF                                                                                                                                                                                         
+                                                                                                                                                                                                        
+_SYSSMU26_285255612$           UNDO_LAB                       OFFLINE                                                                                                                                   
+D:\UNDO_LAB.DBF                                                                                                                                                                                         
+                                                                                                                                                                                                        
+
+8 rows selected.
+
+SQL> update login_lab_ubd set data_sf=sysdate where laborator='Lab8';
+
+1 row updated.
+
+SQL> 
+SQL> update login_lab_ubd set durata=round((data_sf-data_in)*24*60) where laborator='Lab8';
+
+1 row updated.
+
+SQL> 
+SQL> commit;
+
+Commit complete.
+
+SQL> select instance_number,instance_name,to_char(startup_time, 'dd-mm-yyyy hh:mi:ss'), host_name from v$instance;
+
+INSTANCE_NUMBER INSTANCE_NAME    TO_CHAR(STARTUP_TIM HOST_NAME                                                                                                                                          
+--------------- ---------------- ------------------- ----------------------------------------------------------------                                                                                   
+              1 orcl             22-11-2021 07:33:06 DESKTOP-E0N7ML4                                                                                                                                    
+
+SQL> 
+SQL> select nume_stud, grupa, laborator, to_char(data_in, 'dd-mm-yyyy hh:mi:ss') data_inceput, to_char(data_sf, 'dd-mm-yyyy hh:mi:ss')data_sfarsit, durata minute_lucrate from login_lab_ubd;
+
+NUME_STUD                      GRUPA      LABORATOR  DATA_INCEPUT        DATA_SFARSIT        MINUTE_LUCRATE                                                                                             
+------------------------------ ---------- ---------- ------------------- ------------------- --------------                                                                                             
+Pantelimon Andreea             341C5      Lab6       09-11-2021 10:04:21 09-11-2021 11:44:43            100                                                                                             
+Pantelimon Andreea             341C5      Lab8       23-11-2021 10:08:25 23-11-2021 11:44:52             96                                                                                             
+Pantelimon Andreea             341C5      Lab2       17-10-2021 05:40:39 17-10-2021 07:33:56            113                                                                                             
+Pantelimon Andreea             341C5      Lab4       26-10-2021 10:18:49 26-10-2021 11:31:22             73                                                                                             
+Pantelimon Andreea             341C5      Lab3       19-10-2021 10:31:03 19-10-2021 11:42:02             71                                                                                             
+Pantelimon Andreea             341C5      Lab5       02-11-2021 10:39:03 02-11-2021 11:48:38             70                                                                                             
+Pantelimon Andreea             341C5      Lab7       16-11-2021 10:09:42                                                                                                                                
+Pantelimon Andreea             341C5      Lab7_c     16-11-2021 11:55:00 16-11-2021 11:58:38              4                                                                                             
+
+8 rows selected.
+
+SQL> spool off;
